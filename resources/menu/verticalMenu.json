@@ -21,7 +21,7 @@
       "badge": ["danger", "2"]
     },
     {
-      "url": "/product-dashboard",
+      "url": "/reporting-dashboard",
       "name": "Reporting",
       "icon": "menu-icon tf-icons mdi mdi-flip-to-front",
       "slug": "reporting"

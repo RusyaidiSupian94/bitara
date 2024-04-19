@@ -95,8 +95,9 @@ class Orders extends Controller
 
     public function order_complete_detail(Request $request){
         $order = Order::with('customer.user_details','details.product')->where('id', $request->id)->first();
+        $page = $request->page;
 
-        return view('content.admin.order.complete-order-detail', compact('order'));
+        return view('content.admin.order.complete-order-detail', compact('order','page'));
 
 
     }

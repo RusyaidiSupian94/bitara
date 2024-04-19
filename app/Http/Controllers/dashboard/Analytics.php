@@ -39,6 +39,14 @@ class Analytics extends Controller
         $products = Product::orderBy('created_at')->get();
         return view('content.admin.product.dashboards-product', compact('products'));
     }
+    public function reporting_dashboard()
+    {
+
+        $products = Product::orderBy('created_at')->get();
+        $orders = Order::with('customer.user_details')->orderBy('created_at')->get();
+
+        return view('content.admin.reporting.dashboards-reporting', compact('products', 'orders'));
+    }
     public function product_add()
     {
         $category = Category::get();

@@ -34,7 +34,6 @@
             </div>
           </div>
         </div>
-        <p class="mt-3"><span class="fw-medium">Total 48.5% growth</span> 😎 this month</p>
       </div>
       <div class="card-body">
         <div class="row g-3">
@@ -130,8 +129,8 @@
             </div>
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
               <div class="me-2">
-                <h6 class="mb-0">Zipcar</h6>
-                <small>Vuejs, React & HTML</small>
+                <h6 class="mb-0">Beef</h6>
+                <small>Wagyu</small>
               </div>
               <div>
                 <h6 class="mb-2">RM24,895.65</h6>
@@ -147,8 +146,8 @@
             </div>
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
               <div class="me-2">
-                <h6 class="mb-0">Bitbank</h6>
-                <small>Sketch, Figma & XD</small>
+                <h6 class="mb-0">Lamb</h6>
+                <small>Shank</small>
               </div>
               <div>
                 <h6 class="mb-2">RM8,6500.20</h6>
@@ -164,8 +163,8 @@
             </div>
             <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
               <div class="me-2">
-                <h6 class="mb-0">Aviato</h6>
-                <small>HTML & Angular</small>
+                <h6 class="mb-0">Chicken</h6>
+                <small>Whole leg, wing</small>
               </div>
               <div>
                 <h6 class="mb-2">RM1,2450.80</h6>
@@ -223,7 +222,7 @@
               <h4 class="mb-0 me-2">RM25.6k</h4>
               <small class="text-success mt-1">+42%</small>
             </div>
-            <small>Weekly Project</small>
+            <small>Bitara Mart</small>
           </div>
         </div>
       </div>
@@ -249,29 +248,46 @@
             </div>
           </div>
           <div class="card-body mt-mg-1">
-            <h6 class="mb-2">New Project</h6>
+            <h6 class="mb-2">Incoming Order</h6>
             <div class="d-flex flex-wrap align-items-center mb-2 pb-1">
               <h4 class="mb-0 me-2">862</h4>
-              <small class="text-danger mt-1">-18%</small>
             </div>
-            <small>Yearly Project</small>
+            <small>Bitara Mart</small>
           </div>
         </div>
       </div>
       <!--/ New Yearly Project -->
-      <!-- Sessions chart -->
+      <!-- New Yearly Project -->
       <div class="col-sm-6">
         <div class="card h-100">
-          <div class="card-header pb-0">
-            <h4 class="mb-0">2,856</h4>
+          <div class="card-header d-flex align-items-center justify-content-between">
+            <div class="avatar">
+              <div class="avatar-initial bg-primary rounded-circle shadow-sm">
+                <i class="mdi mdi-wallet-travel mdi-24px"></i>
+              </div>
+            </div>
+            <div class="dropdown">
+              <button class="btn p-0" type="button" id="newProjectID" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="mdi mdi-dots-vertical mdi-24px"></i>
+              </button>
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="newProjectID">
+                <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
+                <a class="dropdown-item" href="javascript:void(0);">Share</a>
+                <a class="dropdown-item" href="javascript:void(0);">Update</a>
+              </div>
+            </div>
           </div>
-          <div class="card-body">
-            <div id="sessionsColumnChart" class="mb-3"></div>
-            <h6 class="text-center mb-0">Sessions</h6>
+          <div class="card-body mt-mg-1">
+            <h6 class="mb-2">Current Product</h6>
+            <div class="d-flex flex-wrap align-items-center mb-2 pb-1">
+              <h4 class="mb-0 me-2">36</h4>
+            </div>
+            <small>Bitara Mart</small>
           </div>
         </div>
       </div>
-      <!--/ Sessions chart -->
+      <!--/ New Yearly Project -->
+     
     </div>
   </div>
   <!--/ Total Earning -->

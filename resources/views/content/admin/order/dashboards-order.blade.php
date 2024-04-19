@@ -168,7 +168,7 @@
                                                 <td>
                                                     <div class="dropdown">
                                                         <a target="_blank"
-                                                            href="{{ route('complete-order-detail', ['id' => $order->id]) }}">
+                                                            href="{{ route('complete-order-detail', ['id' => $order->id, 'page' => 'o']) }}">
                                                             <button id="completeModal" type="button"
                                                                 class="btn btn-sm btn-success">
                                                                 Details

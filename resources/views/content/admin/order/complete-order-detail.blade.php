@@ -42,7 +42,7 @@
                             </tr>
                             <tr>
                                 <th scope="col">Customer Name: </th>
-                                 <th scope="col" colspan="3"><span
+                                <th scope="col" colspan="3"><span
                                         id="customer_address">{{ $order->customer->user_details->fname . ' ' . $order->customer->user_details->lname }}</span>
                                 </th>
                             </tr>
@@ -75,18 +75,26 @@
                                 <td> <span id="total_amount">{{ $order->total_amount }}</span></td>
                             </tr>
                             @foreach ($order->details as $item)
-                                <td>{{ $loop->iteration }} </td>
-                                <td>{{ $item->product->product_name }}</td>
-                                <td>{{ $item->product_qty }} </td>
-                                <td>{{ $item->sub_total }}</td>
+                                <tr>
+
+                                    <td>{{ $loop->iteration }} </td>
+                                    <td>{{ $item->product->product_name }}</td>
+                                    <td>{{ $item->product_qty }} </td>
+                                    <td>{{ $item->sub_total }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
 
                 <div class="modal-footer pt-2">
-                    <a href="{{ route('dashboard-order') }}"><button type="button"
-                            class="btn btn-secondary">Back</button></a>
+                    @if ($page == 'o')
+                        <a href="{{ route('dashboard-order') }}"><button type="button"
+                                class="btn btn-secondary">Back</button></a>
+                    @else
+                        <a href="{{ route('dashboard-reporting') }}"><button type="button"
+                                class="btn btn-secondary">Back</button></a>
+                    @endif
                 </div>
             </div>
         </div>
