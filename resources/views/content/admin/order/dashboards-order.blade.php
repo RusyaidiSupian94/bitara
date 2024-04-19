@@ -31,6 +31,7 @@
                                         <th>Customer Name</th>
                                         <th>Order Date</th>
                                         <th>Fulfillment</th>
+                                        <th>Delivery Method</th>
                                         <th>Order Details</th>
                                         <th>Payment Details</th>
                                         <th>Total</th>
@@ -53,6 +54,14 @@
                                                         class="badge rounded-pill bg-label-success me-1">Fulfillment</span>
                                                 </td>
                                             @endif
+
+                                            <td>
+                                                @if ($n_order->delivery_method == 1)
+                                                    Delivery
+                                                @else
+                                                    Pickup
+                                                @endif
+                                            </td>
                                             <td class="text-center">
                                                 <a onclick="displayOrderDetails({{ $n_order->id }});"
                                                     class="btn
@@ -95,6 +104,7 @@
                                         <th>Customer Address</th>
                                         <th>Order Date</th>
                                         <th>Order Details</th>
+                                        <th>Delivery Method</th>
                                         <th>Total</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -115,16 +125,34 @@
                                                         class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
                                                 </a>
                                             </td>
+                                            <td class="text-center">
+                                                @if ($order->delivery_method == 1)
+                                                    Delivery
+                                                @elseif($order->delivery_method == 2)
+                                                    Pickup
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
                                             <td class="text-center">{{ $order->total_amount }}</td>
                                             @if ($order->order_status == 'P')
                                                 <td><span class="badge rounded-pill bg-label-warning me-1">Preparing</span>
                                                 </td>
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a href="{{ route('deliver-order', ['id' => $order->id]) }}"
-                                                            class="btn btn-sm btn-info">Delivery</a>
-                                                    </div>
-                                                </td>
+                                                @if ($order->delivery_method == 1)
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a href="{{ route('deliver-order', ['id' => $order->id]) }}"
+                                                                class="btn btn-sm btn-info">Delivery</a>
+                                                        </div>
+                                                    </td>
+                                                @else
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a href="{{ route('complete-order', ['id' => $order->id]) }}"
+                                                                class="btn btn-sm btn-success">Complete</a>
+                                                        </div>
+                                                    </td>
+                                                @endif
                                             @elseif ($order->order_status == 'D')
                                                 <td><span class="badge rounded-pill bg-label-info me-1">Delivering</span>
                                                 </td>
@@ -139,12 +167,12 @@
                                                 </td>
                                                 <td>
                                                     <div class="dropdown">
-                                                       <a target="_blank" href="{{route('complete-order-detail',['id'=> $order->id])}}"> <button  id="completeModal" type="button" class="btn btn-sm btn-success"
-                                                            {{-- data-id="{{ $order->id }}" data-bs-toggle="modal"
-                                                            data-bs-target="#completedOrderDetailsModal"--}}
-                                                            > 
-                                                           Details
-                                                        </button></a>
+                                                        <a target="_blank"
+                                                            href="{{ route('complete-order-detail', ['id' => $order->id]) }}">
+                                                            <button id="completeModal" type="button"
+                                                                class="btn btn-sm btn-secondary">
+                                                                Details
+                                                            </button></a>
                                                     </div>
                                                 </td>
                                             @endif
@@ -323,7 +351,7 @@
                         $('#total_amount').text(response.total_amount);
 
                         var $tr = $('#item');
-                         $tr.empty();
+                        $tr.empty();
                         $.each(response.details, function(index, data) {
                             $tr.append('<td>' + ++index + '</td><td>' + data.product
                                 .product_name +
