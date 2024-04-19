@@ -38,13 +38,13 @@
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">
-                                    @foreach ($orders as $order)
+                                    @foreach ($new_orders as $n_order)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $order->customer->user_details->fname }}</td>
-                                            <td>{{ date('d-m-Y h:i a', strtotime($order->date)) }}</td>
+                                            <td>{{ $n_order->customer->user_details->fname }}</td>
+                                            <td>{{ date('d-m-Y h:i a', strtotime($n_order->date)) }}</td>
 
-                                            @if ($order->fullfillment_status == 'U')
+                                            @if ($n_order->fullfillment_status == 'U')
                                                 <td><span
                                                         class="badge rounded-pill bg-label-danger me-1">Unfulfillment</span>
                                                 </td>
@@ -54,17 +54,11 @@
                                                 </td>
                                             @endif
                                             <td class="text-center">
-                                                <a onclick="displayOrderDetails({{ $order->id }});"
+                                                <a onclick="displayOrderDetails({{ $n_order->id }});"
                                                     class="btn
                                                         btn-sm btn-text-danger">
                                                     <i
                                                         class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i></a>
-                                                <!-- Button trigger modal -->
-                                                {{-- <button type="button" class="btn " data-bs-toggle="modal"
-                                                    data-bs-target="#orderDetailModal">
-                                                    <i
-                                                        class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
-                                                </button> --}}
                                             </td>
                                             <td class="text-center"> <button type="button" class="btn "
                                                     data-bs-toggle="modal" data-bs-target="#paymentDetailModal">
@@ -72,12 +66,14 @@
                                                         class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
                                                 </button>
                                             </td>
-                                            <td class="text-center">{{ $order->total_amount }}</td>
+                                            <td class="text-center">{{ $n_order->total_amount }}</td>
                                             <td>
                                                 <div class="dropdown">
-                                                    <a href="{{ route('prepare-order', ['id' => $order->id]) }}"
-                                                        class="btn btn-sm btn-success">Prepare Order</a>
-                                                    <a href="{{ route('cancel-order', ['id' => $order->id]) }}"
+                                                    @if ($n_order->fullfillment_status == 'F')
+                                                        <a href="{{ route('prepare-order', ['id' => $n_order->id]) }}"
+                                                            class="btn btn-sm btn-success">Prepare Order</a>
+                                                    @endif
+                                                    <a href="{{ route('cancel-order', ['id' => $n_order->id]) }}"
                                                         class="btn btn-sm btn-danger">Cancel</a>
                                                 </div>
                                             </td>
@@ -115,19 +111,43 @@
                                             <td class="text-center">
                                                 <a onclick="displayOrderDetails({{ $order->id }});"
                                                     class="btnbtn-sm btn-text-danger">
-                                                    <i class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
+                                                    <i
+                                                        class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
                                                 </a>
                                             </td>
                                             <td class="text-center">{{ $order->total_amount }}</td>
-                                            <td><span class="badge rounded-pill bg-label-warning me-1">Preparing</span></td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a href="{{ route('edit-product', ['id' => $order->id]) }}"
-                                                        class="btn btn-sm btn-info">Delivery</a>
-                                                    <a href="{{ route('edit-product', ['id' => $order->id]) }}"
-                                                        class="btn btn-sm btn-secondary">Reschedule</a>
-                                                </div>
-                                            </td>
+                                            @if ($order->order_status == 'P')
+                                                <td><span class="badge rounded-pill bg-label-warning me-1">Preparing</span>
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <a href="{{ route('deliver-order', ['id' => $order->id]) }}"
+                                                            class="btn btn-sm btn-info">Delivery</a>
+                                                    </div>
+                                                </td>
+                                            @elseif ($order->order_status == 'D')
+                                                <td><span class="badge rounded-pill bg-label-info me-1">Delivering</span>
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <a href="{{ route('complete-order', ['id' => $order->id]) }}"
+                                                            class="btn btn-sm btn-success">Complete</a>
+                                                    </div>
+                                                </td>
+                                            @elseif ($order->order_status == 'C')
+                                                <td><span class="badge rounded-pill bg-label-success me-1">Completed</span>
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <button id="completeModal" type="button" class="btn"
+                                                            data-id="{{ $order->id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#completedOrderDetailsModal">
+                                                            <i
+                                                                class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            @endif
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -139,6 +159,50 @@
         </div>
     </div>
 
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#Order Id: </th>
+                <th scope="col" colspan="3"><span id="order_id"></span></th>
+            </tr>
+            <tr>
+                <th scope="col">#Transaction Id: </th>
+                <th scope="col"><span id="transaction_id"></span></th>
+                <th scope="col">Payment Method: </th>
+                <th scope="col"><span id="payment_method"></span></th>
+            </tr>
+            <tr>
+                <th scope="col">Customer Name: </th>
+                <th scope="col" colspan="3"><span id="customer_name"></span></th>
+            </tr>
+            <tr>
+                <th scope="col">Customer Address: </th>
+                <th scope="col" colspan="3"><span id="customer_address"></span></th>
+            </tr>
+            <tr>
+                <th scope="col">Order timestamp: </th>
+                <th scope="col"><span id="order_timestamp"></span></th>
+                <th scope="col">Preparing timestamp: </th>
+                <th scope="col"><span id="preparing_timestamp"></span></th>
+            </tr>
+            <tr>
+                <th scope="col">Delivering timestamp: </th>
+                <th scope="col"><span id="delivering_timestamp"></span></th>
+                <th scope="col">Completed timestamp: </th>
+                <th scope="col"><span id="completed_timestamp"></span></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="4"> </td>
+            </tr>
+            <tr>
+                <td colspan="2"> Item</td>
+                <td> Total Amount</td>
+                <td> <span id="total_amount"></span></td>
+            </tr>
+        </tbody>
+    </table>
     <!--Order Modal -->
     <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -195,6 +259,46 @@
         </div>
     </div>
 
+    <!--Completed Modal -->
+    <div class="modal fade" id="completedOrderDetailsModal" tabindex="-1"
+        aria-labelledby="completedOrderDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="completedOrderDetailsModalLabel">Order Details
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-active">
+                                ...
+                            </tr>
+                            <tr>
+                                ...
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td colspan="2" class="table-active">Larry the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 <!-- Include SweetAlert CSS -->
 
@@ -211,7 +315,24 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            // $('#productTbl').DataTable();
+            $('#completeModal').click(function() {
+                var orderId = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('complete-order-detail') }}", // Replace with your route to fetch data
+                    type: 'GET',
+                    data: {
+                        id: order_id,
+                    },
+                    success: function(response) {
+                        // Populate modal with data
+                
+                    },
+                    error: function(xhr) {
+                        // Handle error
+                        console.error('Error:', xhr.responseText);
+                    }
+                });
+            });
         });
 
 
