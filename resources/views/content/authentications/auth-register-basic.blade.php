@@ -26,8 +26,9 @@
         <div class="card-body mt-2">
           <h4 class="mb-2">Start your adventurous with us🚀</h4>
 
-          <form id="registrationForm" class="mb-3" action="{{url('/')}}" method="GET">
-
+          <form id="registrationForm" class="mb-3" action="{{ route('auth-register-customer') }}" method="POST">
+            <!-- @csrf token need to put every post -->
+            @csrf
             <div class="row">
               <div class="col-12 col-md-6">
                 <div class="form-floating form-floating-outline mb-3">
@@ -49,14 +50,14 @@
                 <div class="row">
                   <div class="col-12 col-md-6">
                     <div class="form-floating form-floating-outline mb-3">
-                      <input type="text" class="form-control" id="pastcode" name="pastcode" placeholder="Enter your postcode" autofocus required>
-                      <label for="pastcode">Postcode<span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" id="postcode" name="postcode" placeholder="Enter your postcode" autofocus required>
+                      <label for="postcode">Postcode<span class="text-danger">*</span></label>
                     </div>
                   </div>
                   <div class="col-12 col-md-6">
                     <div class="form-floating form-floating-outline mb-3">
                       <div class="form-floating form-floating-outline">
-                        <select id="state" class="form-select" required>
+                        <select id="state" name="state" class="form-select" required>
                           <option selected disabled>Please Choose</option>
                           @foreach ($states as $state)
                           <option value="{{ $state->id }}">{{ $state->state_name }}</option>
@@ -154,4 +155,3 @@
   });
 </script>
 @endsection
-
