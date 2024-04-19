@@ -69,6 +69,9 @@ Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-
 Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
 Route::get('/checkout/{id}', [Customer::class, 'checkout'])->name('checkout');
 
+//payment
+Route::get('/payment-add/{id}', [Customer::class, 'add_payment'])->name('add-payment');
+
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
 Route::get('/layouts/without-navbar', [WithoutNavbar::class, 'index'])->name('layouts-without-navbar');

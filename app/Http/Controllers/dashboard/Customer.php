@@ -79,7 +79,6 @@ class Customer extends Controller
 
 
         return response()->json(['success' => 'Added to cart']);
-        
     }
 
     public function cart_remove(Request $request)
@@ -114,6 +113,12 @@ class Customer extends Controller
                 'updated_at' => now(),
             ]);
         }
-        return redirect()->route('dashboard-customer');
+        return redirect()->route('add-payment', ['id' => $id]);
+    }
+
+    public function add_payment()
+    {
+        $user = Auth::user();
+        return view('content.payment.add-payment', compact('user'));
     }
 }
