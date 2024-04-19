@@ -3,7 +3,7 @@
   return [
     "creatorName" => "ThemeSelection",
     "creatorUrl" => "https://themeselection.com",
-    "templateName" => "Materio",
+    "templateName" => "Bitara",
     "templateSuffix" => "Bootstrap 5 HTML Laravel Free Admin Template",
     "templateVersion" => "1.0.0",
     "templateFree" => true,

@@ -1,21 +1,28 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\dashboard\Analytics;
-use App\Http\Controllers\layouts\WithoutMenu;
-use App\Http\Controllers\layouts\WithoutNavbar;
-use App\Http\Controllers\layouts\Fluid;
-use App\Http\Controllers\layouts\Container;
-use App\Http\Controllers\layouts\Blank;
-use App\Http\Controllers\pages\AccountSettingsAccount;
-use App\Http\Controllers\pages\AccountSettingsNotifications;
-use App\Http\Controllers\pages\AccountSettingsConnections;
-use App\Http\Controllers\pages\MiscError;
-use App\Http\Controllers\pages\MiscUnderMaintenance;
+use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\authentications\RegisterBasic;
-use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\cards\CardBasic;
+use App\Http\Controllers\dashboard\Analytics;
+use App\Http\Controllers\extended_ui\PerfectScrollbar;
+use App\Http\Controllers\extended_ui\TextDivider;
+use App\Http\Controllers\form_elements\BasicInput;
+use App\Http\Controllers\form_elements\InputGroups;
+use App\Http\Controllers\form_layouts\HorizontalForm;
+use App\Http\Controllers\form_layouts\VerticalForm;
+use App\Http\Controllers\icons\MdiIcons;
+use App\Http\Controllers\layouts\Blank;
+use App\Http\Controllers\layouts\Container;
+use App\Http\Controllers\layouts\Fluid;
+use App\Http\Controllers\layouts\WithoutMenu;
+use App\Http\Controllers\layouts\WithoutNavbar;
+use App\Http\Controllers\pages\AccountSettingsAccount;
+use App\Http\Controllers\pages\AccountSettingsConnections;
+use App\Http\Controllers\pages\AccountSettingsNotifications;
+use App\Http\Controllers\pages\MiscError;
+use App\Http\Controllers\pages\MiscUnderMaintenance;
+use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\user_interface\Accordion;
 use App\Http\Controllers\user_interface\Alerts;
 use App\Http\Controllers\user_interface\Badges;
@@ -35,19 +42,18 @@ use App\Http\Controllers\user_interface\TabsPills;
 use App\Http\Controllers\user_interface\Toasts;
 use App\Http\Controllers\user_interface\TooltipsPopovers;
 use App\Http\Controllers\user_interface\Typography;
-use App\Http\Controllers\extended_ui\PerfectScrollbar;
-use App\Http\Controllers\extended_ui\TextDivider;
-use App\Http\Controllers\icons\MdiIcons;
-use App\Http\Controllers\form_elements\BasicInput;
-use App\Http\Controllers\form_elements\InputGroups;
-use App\Http\Controllers\form_layouts\VerticalForm;
-use App\Http\Controllers\form_layouts\HorizontalForm;
-use App\Http\Controllers\tables\Basic as TablesBasic;
+use Illuminate\Support\Facades\Route;
 
 // Main Page Route
 Route::get('/', [LoginBasic::class, 'index'])->name('auth-login-basic');
 Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard-analytics');
 Route::get('/customer-dashboard', [Analytics::class, 'customer_dashboard'])->name('dashboard-customer');
+Route::get('/product-dashboard', [Analytics::class, 'product_dashboard'])->name('dashboard-product');
+Route::get('/product-add', [Analytics::class, 'product_add'])->name('add-product');
+Route::post('/product-store', [Analytics::class, 'product_store'])->name('store-product');
+Route::post('/product-delete', [Analytics::class, 'product_delete'])->name('delete-product');
+Route::get('/product-edit/{id}', [Analytics::class, 'product_edit'])->name('edit-product');
+Route::post('/product-store-edited/{id}', [Analytics::class, 'product_store_edited'])->name('store-edited-product');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
