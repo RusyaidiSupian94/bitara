@@ -99,13 +99,11 @@ $navbarHideToggle = false;
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Total Amount : {{$cartorder->order->total_amount ?? 0}}</h5>
-                                    <a href="{{ route('checkout',['id' => $user->id]) }}" class="btn btn-success">Checkout</a>
+                                    <a href="{{ route('checkout',['id' => $cartorder->order->id]) }}" class="btn btn-success">Checkout</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
                 @else
                 <p>Cart is empty</p>

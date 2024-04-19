@@ -71,6 +71,8 @@ Route::get('/checkout/{id}', [Customer::class, 'checkout'])->name('checkout');
 
 //payment
 Route::get('/payment-add/{id}', [Customer::class, 'add_payment'])->name('add-payment');
+Route::post('/payment-order/{id}', [Customer::class, 'order_payment'])->name('order-payment');
+
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');

@@ -170,7 +170,7 @@
                                                         <a target="_blank"
                                                             href="{{ route('complete-order-detail', ['id' => $order->id]) }}">
                                                             <button id="completeModal" type="button"
-                                                                class="btn btn-sm btn-secondary">
+                                                                class="btn btn-sm btn-success">
                                                                 Details
                                                             </button></a>
                                                     </div>

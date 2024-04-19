@@ -3,22 +3,16 @@
 namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Product;
-use App\Models\UOM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Session;
-use Yajra\DataTables\Facades\DataTables;
 
 class Customer extends Controller
 {
     public function cart_datatable(Request $request)
     {
-        // dd($request->all());
 
         $product = Product::find($request->id);
         $amount = $product->unit_price * $request->qty;
@@ -48,7 +42,7 @@ class Customer extends Controller
                     'order_id' => $orders->id,
                     'product_id' => $request->id,
                     'product_qty' => $request->qty,
-                    'sub_total' => $amount
+                    'sub_total' => $amount,
                 ]);
 
                 $newTotalAmount = $amount + $orders->total_amount;
@@ -73,10 +67,9 @@ class Customer extends Controller
                 'order_id' => $add_cart->id,
                 'product_id' => $request->id,
                 'product_qty' => $request->qty,
-                'sub_total' => $amount
+                'sub_total' => $amount,
             ]);
         }
-
 
         return response()->json(['success' => 'Added to cart']);
     }
@@ -103,22 +96,49 @@ class Customer extends Controller
         return response()->json(['success' => 'Successfully remove from cart']);
     }
 
-    public function checkout(Request $request, $id)
+    public function checkout($id)
     {
         //remove data
-        $orders = Order::where('customer_id', $id)->where('order_status', 'T')->first();
+        $orders = Order::where('id', $id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->first();
         if ($orders) {
             $update_order = Order::where('id', $orders->id)->update([
                 'order_status' => 'N',
                 'updated_at' => now(),
             ]);
         }
-        return redirect()->route('add-payment', ['id' => $id]);
+        return redirect()->route('add-payment', ['id' => $orders->id]);
     }
 
-    public function add_payment()
+    public function add_payment($id)
     {
         $user = Auth::user();
-        return view('content.payment.add-payment', compact('user'));
+        $order = Order::with('customer.user_details', 'details.product')->where('id', $id)->first();
+
+
+        return view('content.payment.add-payment', compact('user', 'order'));
+    }
+    public function order_payment(Request $request, $id)
+    {
+
+        $user = Auth::user();
+        $update_order = Order::where('customer_id', $id)->update([
+            'fullfillment_status' => 'F',
+            'delivery_method' => $request->radioDeliveryMethod,
+            'payment_method' => $request->radioPaymentMethod,
+            'updated_at' => now(),
+        ]);
+
+        $products = Product::get();
+
+        $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
+            $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', ['U']);
+        })->get();
+
+        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', ['U'])->count();
+
+        // return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
+
+        return redirect()->route('dashboard-customer');
+
     }
 }
