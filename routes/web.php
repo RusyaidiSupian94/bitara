@@ -5,6 +5,7 @@ use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\authentications\RegisterBasic;
 use App\Http\Controllers\cards\CardBasic;
 use App\Http\Controllers\dashboard\Analytics;
+use App\Http\Controllers\dashboard\Customer;
 use App\Http\Controllers\dashboard\Orders;
 use App\Http\Controllers\extended_ui\PerfectScrollbar;
 use App\Http\Controllers\extended_ui\TextDivider;
@@ -59,6 +60,8 @@ Route::post('/product-store-edited/{id}', [Analytics::class, 'product_store_edit
 Route::get('/order-dashboard', [Orders::class, 'order_dashboard'])->name('dashboard-order');
 Route::get('/order-datatable', [Orders::class, 'order_datatable'])->name('datatable-order');
 Route::get('/order-prepare/{id}', [Orders::class, 'order_prepare'])->name('prepare-order');
+
+Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');
