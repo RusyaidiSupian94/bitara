@@ -65,7 +65,9 @@ Route::get('/order-deliver/{id}', [Orders::class, 'order_deliver'])->name('deliv
 Route::get('/order-complete/{id}', [Orders::class, 'order_complete'])->name('complete-order');
 Route::get('/order-complete-detail', [Orders::class, 'order_complete_detail'])->name('complete-order-detail');
 
-// Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
+Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
+Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
+Route::get('/checkout/{id}', [Customer::class, 'checkout'])->name('checkout');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');

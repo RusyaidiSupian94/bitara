@@ -16,15 +16,22 @@ $navbarHideToggle = false;
 @endsection
 
 @section('content')
+<input type="hidden" name="user_id" id="user_id" value="{{$user->id}}">
 <div class="card w-100 h-100">
     <div class="row gy-4 p-4">
         <div class="col-12">
+            <div class="row gy-4 ">
+                <div class="col-md-12 d-flex justify-content-end">
+                    <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                        <i class="mdi mdi-cart mdi-24px"></i></button>
+                </div>
+            </div>
+            <br>
             <div class="row gy-4">
                 <!-- Product List from database -->
                 @foreach ($products as $product)
                 <div class="col-sm-3">
                     <div class="card h-100">
-
                         <div class="card-body">
                             <img src="{{ url('/storage/product/' . $product->product_img) }}" class="card-img-top image-fluid" alt="...">
                             {{-- <div class="d-flex flex-wrap align-items-end justify-content-end mb-2 pb-1"> --}}
@@ -48,10 +55,8 @@ $navbarHideToggle = false;
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4 text-end">
-                                    <!-- <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                                        <i class="mdi mdi-cart mdi-24px"></i></button> -->
-                                    <a onclick="addToCard({{ $product->id }});" class="btnbtn-sm btn-text-danger">
-                                        <i class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
+                                    <a onclick="addToCart({{ $product->id }});" class="btnbtn-sm btn-text-danger">
+                                        <i class="mdi mdi-cart mdi-24px"></i>
                                     </a>
                                 </div>
                             </div>
@@ -60,31 +65,51 @@ $navbarHideToggle = false;
                 </div>
                 @endforeach
             </div>
+
             <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
                     <h5 id="offcanvasRightLabel">Cart</h5>
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive text-nowrap">
-                                <table id="cartTbl" class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Product Name</th>
-                                            <th>Quantity</th>
-                                            <th>Sub Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                    @if($totalCart>0)
+                    @foreach ($order as $cartorder)
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="{{ url('/storage/product/' . $cartorder->product->product_img) }}" class="card-img-top image-fluid" alt="...">
+                                {{-- <div class="d-flex flex-wrap align-items-end justify-content-end mb-2 pb-1"> --}}
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">Product : {{ $cartorder->product->product_name }}</h5>
+                                    <p class="card-text">Quantity : {{ $cartorder->product_qty }}</p>
+                                    <p class="card-text">Total : {{ $cartorder->sub_total }}</p>
+                                    <button onclick="removeToCart({{ $cartorder->id }});" class="btn btn-danger">Remove</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+
+                    @endforeach
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Amount : {{$cartorder->order->total_amount ?? 0}}</h5>
+                                    <a href="{{ route('checkout',['id' => $user->id]) }}" class="btn btn-success">Checkout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
+                @else
+                <p>Cart is empty</p>
+                @endif
             </div>
         </div>
     </div>
@@ -103,6 +128,11 @@ $navbarHideToggle = false;
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script>
     $(document).ready(function() {
+        var item = {{$totalCart}};
+        if(item > 0){
+            $('#offcanvasRight').offcanvas('show');
+        }
+        
         $('.button-minus').click(function() {
             var productId = $(this).data('id');
             var input = $('#qty' + productId);
@@ -123,32 +153,37 @@ $navbarHideToggle = false;
         });
     });
 
-    function addToCart(id) {
-        var qty = $('#qty' + productId).val();
-        var orderTbl = $('#cartTbl').DataTable({
-            'processing': true,
-            'ajax': {
-                'url': "{{ route('datatable-add-cart') }}",
-                'dataType': 'json',
-                'type': 'GET',
-                'data': {
-                    id: order_id,
+    function addToCart(product_id) {
+        var qty = $('#qty' + product_id).val();
+        var userid = $('#user_id').val();
 
-                }
+        $.ajax({
+            type: "POST",
+            url: "{{ route('cart-datatable') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: product_id,
+                qty: qty,
+                userid: userid,
             },
-
-            'columns': [{
-                    data: 'DT_RowIndex',
-                    name: 'DT_RowIndex'
-                },
-                {
-                    data: 'product_name'
-                },
-
-            ],
+            success: function(response) {
+                location.reload();
+            }
         });
+    }
 
-        $("#orderDetailModal").modal("show");
+    function removeToCart(product_id) {
+        var userid = $('#user_id').val();
+        $.ajax({
+            type: "POST",
+            url: "{{ route('cart-remove') }}",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id: product_id,
+                userid: userid,
+            }
+
+        });
     }
 </script>
 @endsection

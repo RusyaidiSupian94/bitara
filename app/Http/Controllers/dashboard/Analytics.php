@@ -4,6 +4,8 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\UOM;
 use Illuminate\Http\Request;
@@ -19,9 +21,18 @@ class Analytics extends Controller
     }
     public function customer_dashboard()
     {
-
+        $user = Auth::user();
         $products = Product::get();
-        return view('content.customer.dashboards-customer', compact('products'));
+        // $order = Order::with('details')->where('customer_id', $user->id)->where('order_status', 'T')->get();
+
+        $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
+            $q->where('customer_id', $user->id)->where('order_status', 'T');
+        })->get();
+
+
+        $totalCart = Order::where('customer_id', $user->id)->where('order_status', 'T')->count();
+
+        return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
     }
     public function product_dashboard()
     {
@@ -92,7 +103,6 @@ class Analytics extends Controller
             Session::flash('error', 'Failed to save product. Please try again later.');
         }
         return redirect()->route('dashboard-product');
-
     }
 
     public function product_store_edited(Request $request, $id)
@@ -138,6 +148,5 @@ class Analytics extends Controller
             Session::flash('error', 'Failed to save product. Please try again later.');
         }
         return redirect()->route('dashboard-product');
-
     }
 }
