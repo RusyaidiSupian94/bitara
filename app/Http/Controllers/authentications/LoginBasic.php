@@ -42,4 +42,12 @@ class LoginBasic extends Controller
             return redirect()->route('auth-login-basic')->with('error', 'Login failed. Please check your credentials.');
         }
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+
+        return redirect('/');
+    }
 }

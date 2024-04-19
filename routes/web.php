@@ -92,6 +92,7 @@ Route::get('/auth/register-basic', [RegisterBasic::class, 'index'])->name('auth-
 Route::get('/auth/forgot-password-basic', [ForgotPasswordBasic::class, 'index'])->name('auth-reset-password-basic');
 Route::post('/auth/check-login', [LoginBasic::class, 'authenticate'])->name('auth-check-login');
 Route::post('/auth/register-customer', [RegisterBasic::class, 'registerCustomer'])->name('auth-register-customer');
+Route::get('/logout', [LoginBasic::class, 'logout'])->name('logout');
 // cards
 Route::get('/cards/basic', [CardBasic::class, 'index'])->name('cards-basic');
 

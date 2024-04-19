@@ -104,7 +104,9 @@ $navbarDetached = ($navbarDetached ?? '');
                 <div class="dropdown-divider my-1"></div>
               </li>
               <li>
-                <a class="dropdown-item" href="javascript:void(0);">
+
+                <a class="dropdown-item" href="{{ route('logout') }}">
+                  @csrf
                   <i class='mdi mdi-power me-1 mdi-20px'></i>
                   <span class="align-middle">Log Out</span>
                 </a>
