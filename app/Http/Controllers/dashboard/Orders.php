@@ -4,31 +4,64 @@ namespace App\Http\Controllers\dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderDetail;
 use App\Models\Product;
 use App\Models\UOM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
 
-class Analytics extends Controller
+class Orders extends Controller
 {
     public function index()
     {
         return view('content.dashboard.dashboards-analytics');
     }
-    public function customer_dashboard()
+
+    public function order_dashboard()
     {
 
-        $products = Product::get();
-        return view('content.customer.dashboards-customer', compact('products'));
+        $orders = Order::with('customer.user_details')->orderBy('created_at')->get();
+        return view('content.admin.order.dashboards-order', compact('orders'));
     }
-    public function product_dashboard()
+    
+    public function order_prepare($id)
     {
+        $update_order = Order::where('id', $id)->update(
+            ['order_status' => 'P']
+        );
 
-        $products = Product::orderBy('created_at')->get();
-        return view('content.admin.product.dashboards-product', compact('products'));
+        if ($update_order) {
+
+            Session::flash('success', 'Order prepare');
+        } else {
+            Session::flash('error', 'Failed to save product. Please try again later.');
+        }
+        return redirect()->route('dashboard-product');
+
     }
+
+    public function order_datatable(Request $request)
+    {
+        $orders = OrderDetail::where('order_id', $request->id)->with('product')->get();
+        return DataTables::of($orders)
+            ->addIndexColumn()
+            ->addColumn('product_name', function ($row) {
+                return $row->product->product_name;
+            })
+            ->addColumn('quantity', function ($row) {
+                return $row->product_qty;
+            })
+            ->addColumn('sub_total', function ($row) {
+                return $row->sub_total;
+            })
+            ->make(true);
+
+    }
+
     public function product_add()
     {
         $category = Category::get();

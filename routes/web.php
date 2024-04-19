@@ -5,6 +5,7 @@ use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\authentications\RegisterBasic;
 use App\Http\Controllers\cards\CardBasic;
 use App\Http\Controllers\dashboard\Analytics;
+use App\Http\Controllers\dashboard\Orders;
 use App\Http\Controllers\extended_ui\PerfectScrollbar;
 use App\Http\Controllers\extended_ui\TextDivider;
 use App\Http\Controllers\form_elements\BasicInput;
@@ -54,6 +55,10 @@ Route::post('/product-store', [Analytics::class, 'product_store'])->name('store-
 Route::post('/product-delete', [Analytics::class, 'product_delete'])->name('delete-product');
 Route::get('/product-edit/{id}', [Analytics::class, 'product_edit'])->name('edit-product');
 Route::post('/product-store-edited/{id}', [Analytics::class, 'product_store_edited'])->name('store-edited-product');
+
+Route::get('/order-dashboard', [Orders::class, 'order_dashboard'])->name('dashboard-order');
+Route::get('/order-datatable', [Orders::class, 'order_datatable'])->name('datatable-order');
+Route::get('/order-prepare/{id}', [Orders::class, 'order_prepare'])->name('prepare-order');
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');

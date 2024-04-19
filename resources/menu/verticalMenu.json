@@ -14,7 +14,7 @@
       "badge": ["danger", "5"]
     },
     {
-      "url": "/product-dashboard",
+      "url": "/order-dashboard",
       "name": "Ordering",
       "icon": "menu-icon tf-icons mdi mdi-lifebuoy",
       "slug": "ordering",
