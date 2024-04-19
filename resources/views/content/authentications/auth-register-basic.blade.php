@@ -19,7 +19,7 @@
         <div class="app-brand justify-content-center mt-5">
           <a href="{{url('/')}}" class="app-brand-link gap-2">
             <span class="app-brand-logo demo">@include('_partials.macros',["height"=>20])</span>
-            <span class="app-brand-text demo text-heading fw-semibold">BATIRA MART</span>
+            <span class="app-brand-text demo text-heading fw-semibold">BITARA MART</span>
           </a>
         </div>
         <!-- /Logo -->
