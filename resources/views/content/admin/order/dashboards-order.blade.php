@@ -139,11 +139,12 @@
                                                 </td>
                                                 <td>
                                                     <div class="dropdown">
-                                                        <button id="completeModal" type="button" class="btn btn-sm btn-success"
-                                                            data-id="{{ $order->id }}" data-bs-toggle="modal"
-                                                            data-bs-target="#completedOrderDetailsModal">
+                                                       <a target="_blank" href="{{route('complete-order-detail',['id'=> $order->id])}}"> <button  id="completeModal" type="button" class="btn btn-sm btn-success"
+                                                            {{-- data-id="{{ $order->id }}" data-bs-toggle="modal"
+                                                            data-bs-target="#completedOrderDetailsModal"--}}
+                                                            > 
                                                            Details
-                                                        </button>
+                                                        </button></a>
                                                     </div>
                                                 </td>
                                             @endif
@@ -341,6 +342,7 @@
 
 
         function displayOrderDetails(order_id) {
+            $('#orderDetailsTbl').DataTable().destroy();
             var orderTbl = $('#orderDetailsTbl').DataTable({
                 'processing': true,
                 'ajax': {
