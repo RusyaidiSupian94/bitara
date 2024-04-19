@@ -139,11 +139,10 @@
                                                 </td>
                                                 <td>
                                                     <div class="dropdown">
-                                                        <button id="completeModal" type="button" class="btn"
+                                                        <button id="completeModal" type="button" class="btn btn-sm btn-success"
                                                             data-id="{{ $order->id }}" data-bs-toggle="modal"
                                                             data-bs-target="#completedOrderDetailsModal">
-                                                            <i
-                                                                class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
+                                                           Details
                                                         </button>
                                                     </div>
                                                 </td>
@@ -159,50 +158,7 @@
         </div>
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">#Order Id: </th>
-                <th scope="col" colspan="3"><span id="order_id"></span></th>
-            </tr>
-            <tr>
-                <th scope="col">#Transaction Id: </th>
-                <th scope="col"><span id="transaction_id"></span></th>
-                <th scope="col">Payment Method: </th>
-                <th scope="col"><span id="payment_method"></span></th>
-            </tr>
-            <tr>
-                <th scope="col">Customer Name: </th>
-                <th scope="col" colspan="3"><span id="customer_name"></span></th>
-            </tr>
-            <tr>
-                <th scope="col">Customer Address: </th>
-                <th scope="col" colspan="3"><span id="customer_address"></span></th>
-            </tr>
-            <tr>
-                <th scope="col">Order timestamp: </th>
-                <th scope="col"><span id="order_timestamp"></span></th>
-                <th scope="col">Preparing timestamp: </th>
-                <th scope="col"><span id="preparing_timestamp"></span></th>
-            </tr>
-            <tr>
-                <th scope="col">Delivering timestamp: </th>
-                <th scope="col"><span id="delivering_timestamp"></span></th>
-                <th scope="col">Completed timestamp: </th>
-                <th scope="col"><span id="completed_timestamp"></span></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td colspan="4"> </td>
-            </tr>
-            <tr>
-                <td colspan="2"> Item</td>
-                <td> Total Amount</td>
-                <td> <span id="total_amount"></span></td>
-            </tr>
-        </tbody>
-    </table>
+
     <!--Order Modal -->
     <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -260,7 +216,7 @@
     </div>
 
     <!--Completed Modal -->
-    <div class="modal fade" id="completedOrderDetailsModal" tabindex="-1"
+    <div class="modal modal-lg fade" id="completedOrderDetailsModal" tabindex="-1"
         aria-labelledby="completedOrderDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -273,21 +229,46 @@
                     <table class="table">
                         <thead>
                             <tr>
-
+                                <th scope="col">#Order Id: </th>
+                                <th scope="col" colspan="3"><span id="order_id"></span></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">#Transaction Id: </th>
+                                <th scope="col"><span id="transaction_id"></span></th>
+                                <th scope="col">Payment Method: </th>
+                                <th scope="col"><span id="payment_method"></span></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Customer Name: </th>
+                                <th scope="col" colspan="3"><span id="customer_name"></span></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Customer Address: </th>
+                                <th scope="col" colspan="3"><span id="customer_address"></span></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Order timestamp: </th>
+                                <th scope="col"><span id="order_timestamp"></span></th>
+                                <th scope="col">Preparing timestamp: </th>
+                                <th scope="col"><span id="preparing_timestamp"></span></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Delivering timestamp: </th>
+                                <th scope="col"><span id="delivering_timestamp"></span></th>
+                                <th scope="col">Completed timestamp: </th>
+                                <th scope="col"><span id="completed_timestamp"></span></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="table-active">
-                                ...
+                            <tr>
+                                <td colspan="4"> </td>
                             </tr>
                             <tr>
-                                ...
+                                <td colspan="2"> Item</td>
+                                <td> Total Amount</td>
+                                <td> <span id="total_amount"></span></td>
                             </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td colspan="2" class="table-active">Larry the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            <tr id="item"></tr>
                         </tbody>
                     </table>
                 </div>
@@ -321,11 +302,34 @@
                     url: "{{ route('complete-order-detail') }}", // Replace with your route to fetch data
                     type: 'GET',
                     data: {
-                        id: order_id,
+                        id: orderId,
                     },
                     success: function(response) {
                         // Populate modal with data
-                
+                        $('#order_id').text(response.id);
+                        $('#transaction_id').text('unapplicable');
+                        $('#payment_method').text('unapplicable');
+                        $('#customer_name').text(response.customer.user_details.fname + ' ' +
+                            response
+                            .customer.user_details.lname);
+                        $('#customer_address').text(response.customer.user_details.address_1 +
+                            ' ' +
+                            response.customer.user_details.address_2);
+                        $('#order_timestamp').text(response.updated_at);
+                        $('#preparing_timestamp').text(response.preparing_at);
+                        $('#delivering_timestamp').text(response.delivering_at);
+                        $('#completed_timestamp').text(response.completed_at);
+                        $('#total_amount').text(response.total_amount);
+
+                        var $tr = $('#item');
+                         $tr.empty();
+                        $.each(response.details, function(index, data) {
+                            $tr.append('<td>' + ++index + '</td><td>' + data.product
+                                .product_name +
+                                '</td><td>' + data.product_qty + '</td> <td>' + data
+                                .sub_total + '</td>');
+                        });
+
                     },
                     error: function(xhr) {
                         // Handle error

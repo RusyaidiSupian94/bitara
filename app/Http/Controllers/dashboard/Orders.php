@@ -93,6 +93,12 @@ class Orders extends Controller
         return redirect()->route('dashboard-order');
     }
 
+    public function order_complete_detail(Request $request){
+        $order = Order::with('customer.user_details','details.product')->where('id', $request->id)->first();
+        return response()->json($order);
+
+    }
+
     public function order_datatable(Request $request)
     {
         $orders = OrderDetail::where('order_id', $request->id)->with('product')->get();
