@@ -127,10 +127,10 @@ $navbarHideToggle = false;
 <script>
     $(document).ready(function() {
         var item = {{$totalCart}};
-        if(item > 0){
+        if (item > 0) {
             $('#offcanvasRight').offcanvas('show');
         }
-        
+
         $('.button-minus').click(function() {
             var productId = $(this).data('id');
             var input = $('#qty' + productId);
@@ -171,6 +171,7 @@ $navbarHideToggle = false;
     }
 
     function removeToCart(product_id) {
+        console.log(product_id);
         var userid = $('#user_id').val();
         $.ajax({
             type: "POST",
@@ -179,6 +180,9 @@ $navbarHideToggle = false;
                 _token: "{{ csrf_token() }}",
                 id: product_id,
                 userid: userid,
+            },
+            success: function(response) {
+                location.reload();
             }
 
         });

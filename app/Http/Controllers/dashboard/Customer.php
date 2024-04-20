@@ -18,7 +18,7 @@ class Customer extends Controller
         $amount = $product->unit_price * $request->qty;
 
         //checking data is exist with status 'T'
-        $orders = Order::where('customer_id', $request->userid)->where('order_status', 'T')->first();
+        $orders = Order::where('customer_id', $request->userid)->where('order_status', ['T','N'])->first();
         if ($orders) {
             $orderDetail = OrderDetail::where('order_id', $orders->id)->where('product_id', $request->id)->first();
             if ($orderDetail) {
@@ -77,9 +77,9 @@ class Customer extends Controller
     public function cart_remove(Request $request)
     {
         //remove data
-        $orders = Order::where('customer_id', $request->userid)->where('order_status', 'T')->first();
+        $orders = Order::where('customer_id', $request->userid)->whereIn('order_status', ['T', 'N'])->first();
         if ($orders) {
-            $orderDetail = OrderDetail::where('id', $request->id)->first();
+            $orderDetail = OrderDetail::where('product_id', $request->id)->first();
             if ($orderDetail) {
                 $newTotalAmount = ($orders->total_amount - $orderDetail->sub_total);
                 $update_cart = Order::where('id', $orders->id)->update([
@@ -139,6 +139,5 @@ class Customer extends Controller
         // return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
 
         return redirect()->route('dashboard-customer');
-
     }
 }
