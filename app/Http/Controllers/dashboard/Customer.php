@@ -18,7 +18,7 @@ class Customer extends Controller
         $amount = $product->unit_price * $request->qty;
 
         //checking data is exist with status 'T'
-        $orders = Order::where('customer_id', $request->userid)->where('order_status', ['T','N'])->first();
+        $orders = Order::where('customer_id', $request->userid)->whereIn('order_status', ['T', 'N'])->first();
         if ($orders) {
             $orderDetail = OrderDetail::where('order_id', $orders->id)->where('product_id', $request->id)->first();
             if ($orderDetail) {
