@@ -29,7 +29,7 @@ class Analytics extends Controller
             $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U');
         })->get();
 
-        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', ['U'])->count();
+        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
 
         return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
     }

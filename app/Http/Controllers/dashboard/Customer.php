@@ -78,8 +78,10 @@ class Customer extends Controller
     {
         //remove data
         $orders = Order::where('customer_id', $request->userid)->whereIn('order_status', ['T', 'N'])->first();
+
         if ($orders) {
-            $orderDetail = OrderDetail::where('product_id', $request->id)->first();
+            $orderDetail = OrderDetail::where('id', $request->id)->first();
+
             if ($orderDetail) {
                 $newTotalAmount = ($orders->total_amount - $orderDetail->sub_total);
                 $update_cart = Order::where('id', $orders->id)->update([
@@ -91,6 +93,11 @@ class Customer extends Controller
                 ]);
                 $delete_cart_detail = OrderDetail::where('id', $orderDetail->id)->delete();
             }
+        }
+
+        $count = OrderDetail::where('order_id', $orders->id)->count();
+        if ($count == 0) {
+            $orders->delete();
         }
 
         return response()->json(['success' => 'Successfully remove from cart']);
@@ -114,7 +121,6 @@ class Customer extends Controller
         $user = Auth::user();
         $order = Order::with('customer.user_details', 'details.product')->where('id', $id)->first();
 
-
         return view('content.payment.add-payment', compact('user', 'order'));
     }
     public function order_payment(Request $request, $id)
@@ -127,15 +133,6 @@ class Customer extends Controller
             'payment_method' => $request->radioPaymentMethod,
             'updated_at' => now(),
         ]);
-
-        $products = Product::get();
-
-        $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
-            $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', ['U']);
-        })->get();
-
-        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', ['U'])->count();
-
         // return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
 
         return redirect()->route('dashboard-customer');
