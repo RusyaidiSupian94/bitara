@@ -41,11 +41,38 @@ class Analytics extends Controller
     }
     public function reporting_dashboard()
     {
+        $array = [];
 
         $products = Product::orderBy('created_at')->get();
         $orders = Order::with('customer.user_details')->orderBy('created_at')->get();
+        // $orderDetails = OrderDetail::select('product_id');
 
-        return view('content.admin.reporting.dashboards-reporting', compact('products', 'orders'));
+        $product_id = Product::pluck('id')->toArray();
+        foreach ($product_id as $key => $value) {
+            # code...
+            $order_qty_sum = OrderDetail::where('product_id', $value)->sum('product_qty');
+            // Assuming $order_qty_sum represents the total quantity ordered for this product
+
+            $product = Product::find($value); // Assuming $value represents the product_id
+
+            $array[$key] = [
+                'product_id' => $value,
+                'product_name' => $product->product_name,
+                'cost_price' => $product->cost_price,
+                'sell_price' => $product->unit_price,
+                'stock_qty' => $product->total_stock,
+                'sell_product_qty' => $order_qty_sum,
+                'total_cost' => $order_qty_sum * $product->cost_price,
+                'total_sell'=> $order_qty_sum * $product->unit_price,
+                'profit'=> ($order_qty_sum * $product->unit_price)-($order_qty_sum * $product->cost_price),
+            ];
+
+        }
+
+
+
+
+        return view('content.admin.reporting.dashboards-reporting', compact('products', 'orders', 'array'));
     }
     public function product_add()
     {

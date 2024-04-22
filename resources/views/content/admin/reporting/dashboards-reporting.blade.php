@@ -52,7 +52,7 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl-tab-pane"
                                     type="button" role="tab" aria-controls="pnl-tab-pane"
-                                    aria-selected="false">PNL</button>
+                                    aria-selected="false">Profit & Loss</button>
                             </li>
                         </ul>
 
@@ -192,9 +192,44 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="pnl-tab-pane" role="tabpanel" aria-labelledby="pnl-tab"
-                                tabindex="0">...</div>
 
+                            <!-- Pnl -->
+                            <div class="tab-pane fade" id="pnl-tab-pane" role="tabpanel" aria-labelledby="pnl-tab"
+                                tabindex="0"><div class="table-responsive text-nowrap">
+                                    <div class="table-responsive text-nowrap">
+                                        <table id="productTbl" class="table table-sm">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Product Name</th>
+                                                    <th>Cost Price</th>
+                                                    <th>Sell Price</th>
+                                                    <th>Stock Quantity</th>
+                                                    <th>Sell Quantity</th>
+                                                    <th>Total Cost</th>
+                                                    <th>Total Sell</th>
+                                                    <th>Profit</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="table-border-bottom-0">
+                                                @foreach ($array as $pnlData)
+                                                    <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+        <td>{{ $pnlData['product_name'] }}</td>
+        <td class="text-center">RM{{ $pnlData['cost_price'] }}</td>
+        <td class="text-center">RM{{ $pnlData['sell_price'] }}</td>
+        <td class="text-center">{{ $pnlData['stock_qty'] }}</td>
+        <td class="text-center">{{ $pnlData['sell_product_qty'] }}</td>
+        <td class="text-center">RM{{ $pnlData['total_cost'] }}</td>
+        <td class="text-center">RM{{ $pnlData['total_sell'] }}</td>
+        <td class="text-center">RM{{ $pnlData['profit'] }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div></div>
+<!-- End PNL -->
                         </div>
                     </div>
                 </div>
