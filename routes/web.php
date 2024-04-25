@@ -53,6 +53,7 @@ Route::get('/customer-dashboard', [Analytics::class, 'customer_dashboard'])->nam
 Route::get('/product-dashboard', [Analytics::class, 'product_dashboard'])->name('dashboard-product');
 Route::get('/reporting-dashboard', [Analytics::class, 'reporting_dashboard'])->name('dashboard-reporting');
 Route::get('/product-add', [Analytics::class, 'product_add'])->name('add-product');
+Route::get('/product-list', [Analytics::class, 'product_list'])->name('list-product');
 Route::post('/product-store', [Analytics::class, 'product_store'])->name('store-product');
 Route::post('/product-delete', [Analytics::class, 'product_delete'])->name('delete-product');
 Route::get('/product-edit/{id}', [Analytics::class, 'product_edit'])->name('edit-product');
@@ -65,6 +66,10 @@ Route::get('/order-cancel/{id}', [Orders::class, 'order_cancel'])->name('cancel-
 Route::get('/order-deliver/{id}', [Orders::class, 'order_deliver'])->name('deliver-order');
 Route::get('/order-complete/{id}', [Orders::class, 'order_complete'])->name('complete-order');
 Route::get('/order-complete-detail', [Orders::class, 'order_complete_detail'])->name('complete-order-detail');
+Route::get('/order-add', [Orders::class, 'order_add'])->name('add-order');
+Route::get('/order-edit/{id}', [Orders::class, 'order_edit'])->name('edit-order');
+Route::post('/order-store', [Orders::class, 'order_store'])->name('store-order');
+Route::get('/manual-order-dashboard', [Orders::class, 'manual_order_dashboard'])->name('dashboard-manual-order');
 
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
 Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
@@ -73,7 +78,6 @@ Route::get('/checkout/{id}', [Customer::class, 'checkout'])->name('checkout');
 //payment
 Route::get('/payment-add/{id}', [Customer::class, 'add_payment'])->name('add-payment');
 Route::post('/payment-order/{id}', [Customer::class, 'order_payment'])->name('order-payment');
-
 
 // layout
 Route::get('/layouts/without-menu', [WithoutMenu::class, 'index'])->name('layouts-without-menu');

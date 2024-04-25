@@ -21,6 +21,12 @@
       "badge": ["danger", "2"]
     },
     {
+      "url": "/manual-order-dashboard",
+      "name": "Manual Ordering",
+      "icon": "menu-icon tf-icons mdi mdi-table",
+      "slug": "ordering"
+    },
+    {
       "url": "/reporting-dashboard",
       "name": "Reporting",
       "icon": "menu-icon tf-icons mdi mdi-flip-to-front",
