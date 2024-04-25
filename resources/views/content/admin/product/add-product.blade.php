@@ -40,14 +40,14 @@
                             <div class="col-12 col-md-2">
 
                                 <div class="form-floating form-floating-outline mb-4">
-                                    <input type="number" id="cost" name="cost" value="0"
+                                    <input type="number" step="0.01" id="cost" name="cost" value="0"
                                         class="form-control"autofocus required />
                                     <label for="cost">Cost Price</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-2">
                                 <div class="form-floating form-floating-outline mb-4">
-                                    <input type="number" id="unit_price" name="unit_price" value="0"
+                                    <input type="number" step="0.01" id="unit_price" name="unit_price" value="0"
                                         class="form-control"autofocus required />
                                     <label for="unit_price">Unit Price</label>
                                 </div>
@@ -58,11 +58,11 @@
                                         <option selected disabled>Choose..</option>
                                         @foreach ($uoms as $uom)
                                             <option value="{{ $uom->id }}">
-                                                {{ number_format($uom->qty, 2) . '/' . $uom->description }}
+                                                {{ $uom->qty . '/' . $uom->description }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    <label for="uom">Product uom</label>
+                                    <label for="uom">Product Weight</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
@@ -84,6 +84,4 @@
             </div>
         </div>
     </div>
-
-
 @endsection

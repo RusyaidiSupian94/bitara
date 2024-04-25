@@ -27,4 +27,12 @@ class Product extends Model
 
     use HasFactory;
 
+    public function weight()
+    {
+        return $this->hasOne(UOM::class, 'id', 'uom_id');
+    }
+    public function category()
+    {
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 }

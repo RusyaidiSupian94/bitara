@@ -36,7 +36,7 @@ class Analytics extends Controller
     public function product_dashboard()
     {
 
-        $products = Product::orderBy('created_at')->get();
+        $products = Product::with('category', 'weight')->orderBy('created_at')->get();
         return view('content.admin.product.dashboards-product', compact('products'));
     }
     public function reporting_dashboard()
@@ -63,14 +63,11 @@ class Analytics extends Controller
                 'stock_qty' => $product->total_stock,
                 'sell_product_qty' => $order_qty_sum,
                 'total_cost' => $order_qty_sum * $product->cost_price,
-                'total_sell'=> $order_qty_sum * $product->unit_price,
-                'profit'=> ($order_qty_sum * $product->unit_price)-($order_qty_sum * $product->cost_price),
+                'total_sell' => $order_qty_sum * $product->unit_price,
+                'profit' => ($order_qty_sum * $product->unit_price) - ($order_qty_sum * $product->cost_price),
             ];
 
         }
-
-
-
 
         return view('content.admin.reporting.dashboards-reporting', compact('products', 'orders', 'array'));
     }

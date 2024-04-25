@@ -14,8 +14,9 @@
                 </div>
                 <div class="card-body">
 
-                    <form id="editProductForm" class="mb-3" action="{{ route('store-edited-product',['id' => $product->id]) }}"
-                        enctype="multipart/form-data" method="POST">
+                    <form id="editProductForm" class="mb-3"
+                        action="{{ route('store-edited-product', ['id' => $product->id]) }}" enctype="multipart/form-data"
+                        method="POST">
                         @csrf
                         <div class="form-floating form-floating-outline mb-4">
                             <select class="form-select" id="category" name="category" autofocus required>
@@ -42,15 +43,15 @@
                             <div class="col-12 col-md-2">
 
                                 <div class="form-floating form-floating-outline mb-4">
-                                    <input type="number" id="cost" name="cost" class="form-control"
+                                    <input type="number" step="0.01" id="cost" name="cost" class="form-control"
                                         value="{{ $product->cost_price }}"autofocus required />
                                     <label for="cost">Cost Price</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-2">
                                 <div class="form-floating form-floating-outline mb-4">
-                                    <input type="number" id="unit_price" name="unit_price" 
-                                        class="form-control" value="{{ $product->unit_price }}" autofocus required />
+                                    <input type="number" step="0.01"  id="unit_price" name="unit_price" class="form-control"
+                                        value="{{ $product->unit_price }}" autofocus required />
                                     <label for="unit_price">Unit Price</label>
                                 </div>
                             </div>
@@ -59,26 +60,26 @@
                                     <select class="form-select" id="uom" name="uom" autofocus required>
                                         <option selected disabled>Choose..</option>
                                         @foreach ($uoms as $uom)
-                                            <option
-                                                value="{{ $uom->id }}" {{ $product->uom_id == $uom->id ? 'selected' : '' }}>
-                                                {{ number_format($uom->qty, 2) . '/' . $uom->description }}
+                                            <option value="{{ $uom->id }}"
+                                                {{ $product->uom_id == $uom->id ? 'selected' : '' }}>
+                                                {{ $uom->qty . '/' . $uom->description }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    <label for="uom">Product uom</label>
+                                    <label for="uom">Product Weight</label>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4">
                                 <div class="form-floating form-floating-outline mb-4">
-                                    <input type="number" id="total_stock" name="total_stock"
-                                        class="form-control" value="{{ $product->total_stock }}" autofocus required />
+                                    <input type="number" id="total_stock" name="total_stock" class="form-control"
+                                        value="{{ $product->total_stock }}" autofocus required />
                                     <label for="total_stock">Total Stock</label>
                                 </div>
                             </div>
                         </div>
                         <div class="form-floating form-floating-outline mb-4">
                             <input type="file" class="form-control" id="product_img" name="product_img"
-                                value="{{ $product->product_img }}" autofocus  />
+                                value="{{ $product->product_img }}" autofocus />
                             <label for="product_img">Product Image</label>
                             <div class="container pt-2">
                                 <img src="{{ url('/storage/product/' . $product->product_img) }}" alt="item"
