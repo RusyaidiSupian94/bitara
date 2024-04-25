@@ -28,9 +28,8 @@
               <i class="mdi mdi-dots-vertical mdi-24px"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-              <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-              <a class="dropdown-item" href="javascript:void(0);">Share</a>
-              <a class="dropdown-item" href="javascript:void(0);">Update</a>
+              <a class="dropdown-item" href="#" id="todayOption">Today</a>
+              <a class="dropdown-item" href="#" id="monthOption">Month</a>
             </div>
           </div>
         </div>
@@ -106,9 +105,8 @@
             <i class="mdi mdi-dots-vertical mdi-24px"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-            <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-            <a class="dropdown-item" href="javascript:void(0);">Share</a>
-            <a class="dropdown-item" href="javascript:void(0);">Update</a>
+            <a class="dropdown-item" href="#" id="todayOption">Today</a>
+            <a class="dropdown-item" href="#" id="monthOption">Month</a>
           </div>
         </div>
       </div>
@@ -139,5 +137,31 @@
   </div>
   <!--/ Total Earnings -->
 
+  <!-- Chart Sales -->
+  <!-- <div class="col-xl-12 col-md-12">
+    <div class="card h-100">
+      <div class="card-header pb-0">
+        <h4 class="mb-0">{{$totalSalesToday}}</h4>
+      </div>
+      <div class="card-body">
+        <div id="totalProfitLineChart" class="mb-3"></div>
+        <h6 class="text-center mb-0">Total Sales</h6>
+      </div>
+    </div>
+  </div> -->
+  <!-- End Chart Sales -->
+
 </div>
+@endsection
+
+@section('page-script')
+<script src="{{ asset('assets/js/dashboards-analytics.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script>
+  $(document).ready(function() {
+
+  });
+</script>
 @endsection

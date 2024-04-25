@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 
 class Analytics extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $today = now()->format('d-m-Y');
         $totalSalesToday = Order::where('date', now())->sum('total_amount');
@@ -30,7 +30,7 @@ class Analytics extends Controller
             compact('today', 'totalSalesToday', 'totalOrderToday', 'totalOrderDeliveryToday', 'totalPickupDeliveryToday', 'products')
         );
     }
-    
+
     public function customer_dashboard()
     {
 
@@ -85,7 +85,6 @@ class Analytics extends Controller
                 'total_sell' => $order_qty_sum * $product->unit_price,
                 'profit' => ($order_qty_sum * $product->unit_price) - ($order_qty_sum * $product->cost_price),
             ];
-
         }
 
         return view('content.admin.reporting.dashboards-reporting', compact('products', 'orders', 'array'));
