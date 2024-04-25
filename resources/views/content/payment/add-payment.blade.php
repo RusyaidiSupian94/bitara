@@ -220,7 +220,7 @@
                                     <button id="completeModal" type="submit" class="btn btn-sm btn-primary">
                                         Proceed Payment
                                     </button>
-                                    <a target="_blank" href="{{ route('dashboard-customer') }}">
+                                    <a href="{{ route('dashboard-customer') }}">
                                         <button id="completeModal" type="button" class="btn btn-sm btn-danger">
                                             Cancel
                                         </button>
