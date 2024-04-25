@@ -17,12 +17,26 @@ class Analytics extends Controller
 {
     public function index()
     {
-        return view('content.dashboard.dashboards-analytics');
+        $today = now()->format('d-m-Y');
+        $totalSalesToday = Order::where('date', now())->sum('total_amount');
+        $totalOrderToday = Order::where('date', now())->count();
+        $totalOrderDeliveryToday = Order::whereDate('date', now())->where('delivery_method', '1')->count();
+        $totalPickupDeliveryToday = Order::whereDate('date', now())->where('delivery_method', '2')->count();
+        $products = Product::join('tbl_category', 'tbl_product.category_id', '=', 'tbl_category.id')
+            ->orderBy('tbl_product.total_stock', 'desc')
+            ->get(['tbl_product.*', 'tbl_category.category_description']);
+        return view(
+            'content.dashboard.dashboards-analytics',
+            compact('today', 'totalSalesToday', 'totalOrderToday', 'totalOrderDeliveryToday', 'totalPickupDeliveryToday', 'products')
+        );
     }
+    
     public function customer_dashboard()
     {
+
         $user = Auth::user();
-        $products = Product::get();
+        $category = Category::get();
+        $products = Product::with('weight')->get();
         // $order = Order::with('details')->where('customer_id', $user->id)->where('order_status', 'T')->get();
 
         $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
@@ -31,13 +45,18 @@ class Analytics extends Controller
 
         $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
 
-        return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
+        return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category'));
     }
     public function product_dashboard()
     {
-
         $products = Product::with('category', 'weight')->orderBy('created_at')->get();
         return view('content.admin.product.dashboards-product', compact('products'));
+    }
+    public function product_list(Request $request)
+    {
+        $category = $request->category_id;
+        $products = Product::with('category', 'weight')->where('category_id', $category)->orderBy('created_at')->get();
+        return $products;
     }
     public function reporting_dashboard()
     {
@@ -108,7 +127,7 @@ class Analytics extends Controller
             'unit_price' => $request->unit_price,
             'total_stock' => $request->total_stock,
             'category_id' => $request->category,
-            'uom_id' => $request->uom,
+            'uom_id' => 1,
             'created_by' => Auth::user()->name,
             'created_at' => now(),
 
@@ -147,7 +166,7 @@ class Analytics extends Controller
                 'unit_price' => $request->unit_price,
                 'total_stock' => $request->total_stock,
                 'category_id' => $request->category,
-                'uom_id' => $request->uom,
+                'uom_id' => 1,
                 'updated_by' => Auth::user()->name,
                 'updated_at' => now(),
             ]);

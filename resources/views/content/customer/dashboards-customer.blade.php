@@ -17,114 +17,157 @@
 
 @section('content')
     <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
+    <img  src="{{ asset('assets/img/backgrounds/banner.jpg') }}" width="100%" height="15%" style="object-fit: cover"  alt="Banner Image">
+    <!-- Add banner image here -->
+
     <div class="card w-100 h-100">
         <div class="row gy-4 p-4">
             <div class="col-12">
                 <div class="row gy-4 ">
-                    <div class="col-md-12 d-flex justify-content-end">
-                        <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                            aria-controls="offcanvasRight">
-                            <i class="mdi mdi-cart mdi-24px"></i></button>
+                    <div id="All" class="col-md-3 card shadow-none mb-3">
+                        <button id="buttonall" type="button" class="btn btn-success filter-button" data-value="all">
+                            All
+                        </button>
                     </div>
+                    @foreach ($category as $ctgy)
+                        <div class="col-md-3 card shadow-none mb-3">
+                            <button id="button{{ $ctgy->category_description }}" type="button"
+                                class="btn btn-success filter-button" data-value="{{ $ctgy->category_description }}">
+                                {{ $ctgy->category_description }}
+                            </button>
+                        </div>
+                    @endforeach
+
+                </div>
+                <div class="col-md-12 d-flex justify-content-end">
+                    <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                        aria-controls="offcanvasRight">
+                        <i class="mdi mdi-cart mdi-24px"></i></button>
                 </div>
                 <br>
                 <div class="row gy-4">
                     <!-- Product List from database -->
-                    @foreach ($products as $product)
-                        <div class="col-sm-3">
-                            <div class="card h-100">
-                                <div class="card-body">
-                                    <img src="{{ url('/storage/product/' . $product->product_img) }}"
-                                        class="card-img-top image-fluid" alt="...">
-                                    {{-- <div class="d-flex flex-wrap align-items-end justify-content-end mb-2 pb-1"> --}}
-                                    <div class="row">
-                                        <div class="col-12 col-md-6">
-                                            <h6 class="text-start mb-0 pt-2">{{ $product->product_name }}</h6>
-                                        </div>
-                                        <div class="col-12 col-md-6">
-                                            <h6 class="text-end mb-0 pt-2">RM{{ $product->unit_price }} / <small
-                                                    class="text-success mt-1">piece</small></h6>
-                                        </div>
-                                    </div>
-                                    <div class="py-2">
-                                        <small>{{ $product->product_details }}</small>
-                                    </div>
-                                    <div class="row pt-3">
-                                        <div class="col-12 col-md-8">
-                                            <div class="input-group input-group-sm mb-3">
-                                                <button class="btn btn-outline-secondary button-minus" type="button"
-                                                    data-id="{{ $product->id }}"><i
-                                                        class="mdi mdi-minus mdi-24px"></i></button>
-                                                <input id="qty{{ $product->id }}" type="number" class="form-control"
-                                                    value="0">
-                                                <button class="btn btn-outline-secondary button-plus" type="button"
-                                                    data-id="{{ $product->id }}"><i
-                                                        class="mdi mdi-plus mdi-24px"></i></button>
+                    <div class="container">
+                        <div class="row">
+                            @php $currentCategory = null; @endphp
+                            @foreach ($products as $product)
+                                @if ($currentCategory != $product->category->category_description)
+                                    @if ($currentCategory !== null)
+                        </div><!-- Close the previous row -->
+                        @endif
+                        <div class="row"><!-- Start a new row -->
+                            <div class="col-12">
+                                <div
+                                    class="pt-2 category-heading card-container {{ $product->category->category_description }}">
+                                    <h3>{{ $product->category->category_description }}</h3> <!-- Display category name -->
+                                    <hr> <!-- Add horizontal rule -->
+                                </div>
+                            </div>
+                            @endif
+                            @php $currentCategory = $product->category->category_description; @endphp
+
+                            <div class="col-sm-4 col-md-3 py-2">
+                                <div class="card  h-100 card-container {{ $product->category->category_description }}">
+                                    <div class="card-body h-75">
+                                        <img height="250" src="{{ url('/storage/product/' . $product->product_img) }}"
+                                            class="card-img-top image-fluid" alt="...">
+                                        <div class="row">
+                                            <div class="col-12 col-md-6">
+                                                <h6 class="text-start mb-0 pt-2">{{ $product->product_name }}</h6>
+                                            </div>
+                                            <div class="col-12 col-md-6">
+                                                <h6 class="text-end mb-0 pt-2">RM{{ $product->unit_price }} / <small
+                                                        class="text-success mt-1">{{ $product->weight->description }}</small>
+                                                </h6>
                                             </div>
                                         </div>
-                                        <div class="col-12 col-md-4 text-end">
-                                            <a onclick="addToCart({{ $product->id }});" class="btnbtn-sm btn-text-danger">
-                                                <i class="mdi mdi-cart mdi-24px"></i>
-                                            </a>
+                                        <div class="py-2">
+                                            <small>{{ $product->product_details }}</small>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="row pt-3">
+                                            <div class="col-12 col-md-8">
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <button class="btn btn-outline-secondary button-minus" type="button"
+                                                        data-id="{{ $product->id }}"><i
+                                                            class="mdi mdi-minus mdi-24px"></i></button>
+                                                    <input id="qty{{ $product->id }}" type="number" class="form-control"
+                                                        value="0">
+                                                    <button class="btn btn-outline-secondary button-plus" type="button"
+                                                        data-id="{{ $product->id }}"><i
+                                                            class="mdi mdi-plus mdi-24px"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-4 text-end">
+                                                <a onclick="addToCart({{ $product->id }});"
+                                                    class="btnbtn-sm btn-text-danger">
+                                                    <i class="mdi mdi-cart mdi-24px"></i>
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    @endforeach
+                            @endforeach
+                            @if ($currentCategory !== null)
+                        </div><!-- Close the last row -->
+                        @endif
+                    </div>
                 </div>
 
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
-                    aria-labelledby="offcanvasRightLabel">
-                    <div class="offcanvas-header">
-                        <h5 id="offcanvasRightLabel">Cart</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        @if ($totalCart > 0)
-                            @foreach ($order as $cartorder)
-                                <div class="card mb-3" style="max-width: 540px;">
-                                    <div class="row g-0">
-                                        <div class="col-md-4">
-                                            <img src="{{ url('/storage/product/' . $cartorder->product->product_img) }}"
-                                                class="card-img-top image-fluid" alt="...">
-                                            {{-- <div class="d-flex flex-wrap align-items-end justify-content-end mb-2 pb-1"> --}}
-                                        </div>
-                                        <div class="col-md-8">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Product : {{ $cartorder->product->product_name }}
-                                                </h5>
-                                                <p class="card-text">Quantity : {{ $cartorder->product_qty }}</p>
-                                                <p class="card-text">Total : {{ $cartorder->sub_total }}</p>
-                                                <button onclick="removeToCart({{ $cartorder->id }});"
-                                                    class="btn btn-danger">Remove</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                            {{-- @if ($totalCart > 0) --}}
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h5 class="card-title">Total Amount :
-                                                    {{ $cartorder->order->total_amount ?? 0 }}</h5>
-                                                <a href="{{ route('checkout', ['id' => $cartorder->order->id ?? 0]) }}"
-                                                    class="btn btn-success">Checkout</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {{-- @endif --}}
-                    </div>
-                @else
-                    <p>Cart is empty</p>
-                    @endif
+            </div>
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasRightLabel">Cart</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
                 </div>
+                <div class="offcanvas-body">
+                    @if ($totalCart > 0)
+                        @foreach ($order as $cartorder)
+                            <div class="card mb-3" style="max-width: 540px;">
+                                <div class="row g-0">
+                                    <div class="col-md-4">
+                                        <img src="{{ url('/storage/product/' . $cartorder->product->product_img) }}"
+                                            class="card-img-top image-fluid" alt="...">
+                                        {{-- <div class="d-flex flex-wrap align-items-end justify-content-end mb-2 pb-1"> --}}
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Product : {{ $cartorder->product->product_name }}
+                                            </h5>
+                                            <p class="card-text">Quantity : {{ $cartorder->product_qty }}</p>
+                                            <p class="card-text">Total : {{ $cartorder->sub_total }}</p>
+                                            <button onclick="removeToCart({{ $cartorder->id }});"
+                                                class="btn btn-danger">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                        {{-- @if ($totalCart > 0) --}}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Total Amount :
+                                            {{ $cartorder->order->total_amount ?? 0 }}</h5>
+                                        <a href="{{ route('checkout', ['id' => $cartorder->order->id ?? 0]) }}"
+                                            class="btn btn-success">Checkout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{-- @endif --}}
+                </div>
+            @else
+                <p>Cart is empty</p>
+                @endif
             </div>
         </div>
+    </div>
     </div>
 @endsection
 
@@ -162,6 +205,23 @@
                 console.log(input);
                 var qty = parseInt($(input).val());
                 $(input).val(qty + 1);
+            });
+
+
+
+            $('.filter-button').click(function() {
+                var value = $(this).data('value'); // Get the value associated with the clicked button
+
+                if (value === 'all') {
+                    // Show all card containers
+                    $('.card-container').show('1000');
+                } else {
+                    // Hide all card containers
+                    $('.card-container').hide();
+
+                    // Show card containers with the specified class
+                    $('.card-container').filter('.' + value).show('1000');
+                }
             });
         });
 
