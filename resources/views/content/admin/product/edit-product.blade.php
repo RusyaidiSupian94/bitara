@@ -57,12 +57,11 @@
                             </div>
                             <div class="col-12 col-md-4">
                                 <div class="form-floating form-floating-outline mb-4">
-                                    <select class="form-select" id="uom" name="uom" autofocus required>
+                                    <select class="form-select" id="uom" name="uom" autofocus disabled>
                                         <option selected disabled>Choose..</option>
                                         @foreach ($uoms as $uom)
-                                            <option value="{{ $uom->id }}"
-                                                {{ $product->uom_id == $uom->id ? 'selected' : '' }}>
-                                                {{ $uom->qty . '/' . $uom->description }}
+                                            <option value="{{ $uom->id }} {{ $uom->id == 1 ? 'selected' : '' }}">
+                                                {{$uom->description }}
                                             </option>
                                         @endforeach
                                     </select>

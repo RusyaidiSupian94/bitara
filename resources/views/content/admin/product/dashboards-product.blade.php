@@ -39,18 +39,18 @@
                     @endif
                     <div class="p-2">
 
-                        <div class="table-responsive text-nowrap">
+                        <div class="table-responsive">
                             <table id="productTbl" class="table table-sm">
                                 <thead class="table-light">
                                     <tr>
                                         <th>No</th>
+                                        <th>Category</th>
                                         <th>Product Name</th>
                                         <th>Product Details</th>
-                                        <th>Category</th>
                                         <th>Cost</th>
                                         <th>Unit Price</th>
                                         <th>Stock</th>
-                                        <th>UOM</th>
+                                        <th>Weight</th>
                                         <th>Product Img</th>
                                         <th>Actions</th>
                                     </tr>
@@ -59,13 +59,14 @@
                                     @foreach ($products as $product)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $product->category->category_description }}</td>
                                             <td>{{ $product->product_name }}</td>
                                             <td>{{ $product->product_details }}</td>
-                                            <td>{{ $product->category_id }}</td>
-                                            <td class="text-end">{{ $product->cost_price }}</td>
-                                            <td class="text-end">{{ $product->unit_price }}</td>
+                                            <td class="text-center">{{ $product->cost_price }}</td>
+                                            <td class="text-center">{{ $product->unit_price }}</td>
                                             <td class="text-center">{{ $product->total_stock }}</td>
-                                            <td class="text-center">{{ $product->uom_id }}</td>
+                                            <td class="text-center">
+                                                {{ $product->weight->description }}</td>
                                             <td class="text-center">
                                                 <ul
                                                     class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
