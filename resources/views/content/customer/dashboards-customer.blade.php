@@ -17,7 +17,10 @@
 
 @section('content')
     <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
-    <img  src="{{ asset('assets/img/backgrounds/banner.jpg') }}" width="100%" height="15%" style="object-fit: cover"  alt="Banner Image">
+    <div>
+        <img  src="{{ asset('assets/img/backgrounds/banner.jpg') }}" width="100%" height="15%" style="object-fit: cover"  alt="Banner Image">
+    </div>
+        
     <!-- Add banner image here -->
 
     <div class="card w-100 h-100">
