@@ -110,6 +110,9 @@
                                         @elseif ($payment->order->order_status == 'P')
                                         <td><span class="badge rounded-pill bg-label-warning me-1">Preparing</span>
                                         </td>
+                                        @elseif  ($payment->order->order_status == 'R')
+                                        <td><span class="badge rounded-pill bg-label-warning me-1">Ready</span>
+                                        </td>
                                         @elseif ($payment->order->order_status == 'D')
                                         <td><span class="badge rounded-pill bg-label-info me-1">Delivering</span>
                                         </td>

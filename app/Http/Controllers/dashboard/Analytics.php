@@ -19,17 +19,82 @@ class Analytics extends Controller
     public function index(Request $request)
     {
         $today = now()->format('d-m-Y');
-        $totalSalesToday = Order::where('date', now())->sum('total_amount');
-        $totalOrderToday = Order::where('date', now())->count();
-        $totalOrderDeliveryToday = Order::whereDate('date', now())->where('delivery_method', '1')->count();
-        $totalPickupDeliveryToday = Order::whereDate('date', now())->where('delivery_method', '2')->count();
+        $category = Category::all();
+
         $products = Product::join('tbl_category', 'tbl_product.category_id', '=', 'tbl_category.id')
             ->orderBy('tbl_product.total_stock', 'desc')
             ->get(['tbl_product.*', 'tbl_category.category_description']);
         return view(
             'content.dashboard.dashboards-analytics',
-            compact('today', 'totalSalesToday', 'totalOrderToday', 'totalOrderDeliveryToday', 'totalPickupDeliveryToday', 'products')
+            compact('today', 'products', 'category')
         );
+    }
+
+    public function dashboard_data(Request $request)
+    {
+        $data = [];
+
+        $today = now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y');
+
+        $filter = $request->filter;
+        if ($filter == 1) {
+            $data['sale'] = Order::where('date', now())->sum('total_amount');
+            $data['order'] = Order::where('date', now())->count();
+            $data['delivery'] = Order::with('payment')->where('date', now())->whereHas('payment', function ($payment) {
+                $payment->where('delivery_method', '1');
+            })->count();
+            $data['pickup'] = Order::with('payment')->where('date', now())->whereHas('payment', function ($payment) {
+                $payment->where('delivery_method', '2');
+            })->count();
+        } else {
+
+            $firstDayOfMonth = now()->firstOfMonth()->format('Y-m-d');
+
+            $lastDayOfMonth = now()->lastOfMonth()->format('Y-m-d');
+
+            $data['sale'] = Order::whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->sum('total_amount');
+            $data['order'] = Order::whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->count();
+            $data['delivery'] = Order::with('payment')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('payment', function ($payment) {
+                $payment->where('delivery_method', '1');
+            })->count();
+            $data['pickup'] = Order::with('payment')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('payment', function ($payment) {
+                $payment->where('delivery_method', '2');
+            })->count();
+
+        }
+        return $data;
+    }
+    public function dashboard_data_trend(Request $request)
+    {
+        $data = [];
+
+        $today = now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y');
+        $filter = $request->filter;
+        $category = Category::all();
+
+        $data['category'] = $category->pluck('category_description');
+
+        if ($filter == 1) {
+            foreach ($category as $key => $ctgy) {
+
+                $data[$ctgy->category_description] = Order::with('details.product')->where('date', now())->whereHas('details.product', function ($p) use ($ctgy) {
+                    $p->where('category_id', $ctgy->id);
+                })->count();
+            }
+        } else {
+
+            $firstDayOfMonth = now()->firstOfMonth()->format('Y-m-d');
+
+            $lastDayOfMonth = now()->lastOfMonth()->format('Y-m-d');
+
+            foreach ($category as $key => $ctgy) {
+
+                $data[$ctgy->category_description] = Order::with('details.product')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('details.product', function ($p) use ($ctgy) {
+                    $p->where('category_id', $ctgy->id);
+                })->count();
+            }
+        }
+        return $data;
     }
 
     // public function customer_dashboard()
