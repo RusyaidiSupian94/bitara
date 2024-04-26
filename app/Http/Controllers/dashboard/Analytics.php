@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\UOM;
 use Illuminate\Http\Request;
@@ -43,7 +44,7 @@ class Analytics extends Controller
             $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U');
         })->get();
 
-        $order_paid = Order::with('details.product','details.weight')->where('customer_id', $user->id)->whereNotIn('order_status', ['T'])->where('fullfillment_status', 'F')->get();
+        $order_paid = Order::with('details.product', 'details.weight')->where('customer_id', $user->id)->whereNotIn('order_status', ['T'])->where('fullfillment_status', 'F')->get();
 
         $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
         return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category', 'order_paid'));
@@ -62,11 +63,12 @@ class Analytics extends Controller
     public function reporting_dashboard()
     {
         $array = [];
-
+        $arrayPaymentTbl = [];
         $products = Product::orderBy('created_at')->get();
-        $orders = Order::with('customer.user_details')->orderBy('created_at')->get();
+        //$orders = Order::with('customer.user_details')->orderBy('created_at')->get();
         // $orderDetails = OrderDetail::select('product_id');
-
+        $payments = Payment::with('details')->get();
+        //dd($payments);
         $product_id = Product::pluck('id')->toArray();
         foreach ($product_id as $key => $value) {
             # code...
@@ -88,7 +90,7 @@ class Analytics extends Controller
             ];
         }
 
-        return view('content.admin.reporting.dashboards-reporting', compact('products', 'orders', 'array'));
+        return view('content.admin.reporting.dashboards-reporting', compact('products', 'array', 'payments'));
     }
     public function product_add()
     {

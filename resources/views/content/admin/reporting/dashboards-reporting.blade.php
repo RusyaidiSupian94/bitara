@@ -38,7 +38,7 @@
                             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Main</button>
                         </li> -->
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active " id="order-tab" data-bs-toggle="tab" data-bs-target="#order-tab-pane" type="button" role="tab" aria-controls="order-tab-pane" aria-selected="true">Ordering</button>
+                            <button class="nav-link active " id="order-tab" data-bs-toggle="tab" data-bs-target="#order-tab-pane" type="button" role="tab" aria-controls="order-tab-pane" aria-selected="true">Sales</button>
                         </li>
                         <!-- <li class="nav-item" role="presentation">
                                 <button class="nav-link" id="product-tab" data-bs-toggle="tab"
@@ -46,7 +46,7 @@
                                     aria-controls="product-tab-pane" aria-selected="false">Product</button>
                             </li> -->
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl-tab-pane" type="button" role="tab" aria-controls="pnl-tab-pane" aria-selected="false">Sales</button>
+                            <button class="nav-link" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl-tab-pane" type="button" role="tab" aria-controls="pnl-tab-pane" aria-selected="false">Product</button>
                         </li>
                     </ul>
 
@@ -70,7 +70,22 @@
                         </div> -->
                         <!-- End Main -->
                         <!-- Ordering -->
+
                         <div class="tab-pane fade show active" id="order-tab-pane" role="tabpanel" aria-labelledby="order-tab" tabindex="0">
+                            <div class="row gy-4">
+                                <div class="col-md-3">
+                                    <label>Start Date:</label>
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label>End Date:</label>
+                                    <input type="date" class="form-control" />
+                                </div>
+                                <div class="col-md-1 pt-4">
+                                    <button class="btn btn-primary">Filter</button>
+                                </div>
+                            </div>
+                            </br>
                             <table id="orderTbl" class="table table-bordered table-sm">
                                 <thead class="table-light">
                                     <tr>
@@ -85,15 +100,15 @@
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">
-                                    @foreach ($orders as $order)
+                                    @foreach ($payments as $payment)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $order->customer->user_details->fname }}</td>
-                                        <td>{{ $order->customer->user_details->address_1 . ' ' . $order->customer->user_details->address_2 }}
+                                        <td>{{ $payment->customer->customer_name }}</td>
+                                        <td>{{ $payment->customer_address }}
                                         </td>
-                                        <td>{{ date('d-m-Y h:i a', strtotime($order->date)) }}</td>
+                                        <td>{{ date('d-m-Y h:i a', strtotime($payment->payment_date)) }}</td>
                                         <td class="text-center">
-                                            @if ($order->delivery_method == 1)
+                                            @if ($payment->delivery_method == 1)
                                             Delivery
                                             @elseif($order->delivery_method == 2)
                                             Pickup
@@ -101,7 +116,7 @@
                                             N/A
                                             @endif
                                         </td>
-                                        <td class="text-center">{{ $order->total_amount }}</td>
+                                        <td class="text-center">{{ $payment->payment_amount }}</td>
                                         @if ($order->order_status == 'N')
                                         <td><span class="badge rounded-pill bg-label-info me-1">New Order</span>
                                         </td>
