@@ -29,6 +29,7 @@ class Payment extends Model
         'payment_status',
         'crated_at',
         'updated_at',
+        'order_status',
     ];
 
      public function details()

@@ -74,8 +74,15 @@
                         <div class="tab-pane fade show active" id="order-tab-pane" role="tabpanel" aria-labelledby="order-tab" tabindex="0">
                             <div class="row gy-4">
                                 <div class="col-md-3">
-                                    <label>Start Date:</label>
-                                    <input type="date" class="form-control" />
+                                    <form action="" method="GET">
+                                        <label for="start_date">Start Date:</label>
+                                        <input type="date" id="start_date" name="start_date">
+
+                                        <label for="end_date">End Date:</label>
+                                        <input type="date" id="end_date" name="end_date">
+
+                                        <button type="submit">Filter</button>
+                                    </form>
                                 </div>
                                 <div class="col-md-3">
                                     <label>End Date:</label>

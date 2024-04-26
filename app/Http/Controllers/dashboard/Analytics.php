@@ -34,7 +34,6 @@ class Analytics extends Controller
 
     public function customer_dashboard()
     {
-
         $user = Auth::user();
         $category = Category::get();
         $products = Product::with('weight')->get();
@@ -63,11 +62,10 @@ class Analytics extends Controller
     public function reporting_dashboard()
     {
         $array = [];
-        $arrayPaymentTbl = [];
         $products = Product::orderBy('created_at')->get();
         //$orders = Order::with('customer.user_details')->orderBy('created_at')->get();
         // $orderDetails = OrderDetail::select('product_id');
-        $payments = Payment::with('details')->get();
+        $order_id = Payment::with('details')->toArray();
         //dd($payments);
         $product_id = Product::pluck('id')->toArray();
         foreach ($product_id as $key => $value) {
