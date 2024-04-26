@@ -16,6 +16,7 @@ class Cart extends Model
     protected $table = 'tbl_cart';
     protected $fillable =
         [
+        'customer_id',
         'product_id',
         'product_qty',
         'product_uom',

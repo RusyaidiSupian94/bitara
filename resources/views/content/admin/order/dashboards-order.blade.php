@@ -39,8 +39,8 @@
                                     @foreach ($new_orders as $n_order)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $n_order->customer->user_details->fname }}</td>
-                                            <td>{{ date('d-m-Y h:i a', strtotime($n_order->date)) }}</td>
+                                            <td>{{ $n_order->customer_name }}</td>
+                                            <td>{{ date('d-m-Y h:i a', strtotime($n_order->order->date)) }}</td>
                                             <td>
                                                 @if ($n_order->delivery_method == 1)
                                                     Pickup
@@ -48,10 +48,10 @@
                                                     Delivery
                                                 @endif
                                             </td>
-                                            <td class="text-center">{{ $n_order->total_amount }}</td>
+                                            <td class="text-center">{{ $n_order->payment_amount }}</td>
                                             <td>
                                                 <div class="dropdown">
-                                                    <a href="{{ route('process-order', ['id' => $n_order->id]) }}"
+                                                    <a href="{{ route('process-order', ['id' => $n_order->order_id]) }}"
                                                         class="btn btn-sm btn-success">Process Order</a>
                                                     {{-- @if ($n_order->fullfillment_status == 'F')
                                                         <a href="{{ route('prepare-order', ['id' => $n_order->id]) }}"
@@ -130,7 +130,7 @@
                                                     </td>
                                                     <td>
                                                         <div class="dropdown">
-                                                            <a href="{{ route('complete-order', ['id' => $order->order_id]) }}"
+                                                            <a href="{{ route('complete-order', ['id' => $order->order_id,'page' => 'A']) }}"
                                                                 class="btn btn-sm btn-success">Complete</a>
                                                         </div>
                                                     </td>
@@ -141,7 +141,7 @@
                                                     <td>
                                                         <div class="dropdown">
                                                             <a href="{{ route('deliver-order', ['id' => $order->order_id]) }}"
-                                                                class="btn btn-sm btn-info">Delivery</a>
+                                                                class="btn btn-sm btn-primary">Delivery</a>
                                                         </div>
                                                     </td>
                                                 @endif
@@ -150,7 +150,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="dropdown">
-                                                        <a href="{{ route('complete-order', ['id' => $order->order_id]) }}"
+                                                        <a href="{{ route('complete-order', ['id' => $order->order_id,'page' => 'A']) }}"
                                                             class="btn btn-sm btn-success">Complete</a>
                                                     </div>
                                                 </td>
@@ -162,7 +162,7 @@
                                                         <a target="_blank"
                                                             href="{{ route('complete-order-detail', ['id' => $order->order_id, 'page' => 'o']) }}">
                                                             <button id="completeModal" type="button"
-                                                                class="btn btn-sm btn-success">
+                                                                class="btn btn-sm btn-secondary">
                                                                 Details
                                                             </button></a>
                                                     </div>

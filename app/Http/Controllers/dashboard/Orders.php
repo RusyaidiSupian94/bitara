@@ -23,8 +23,7 @@ class Orders extends Controller
 
     public function order_dashboard()
     {
-
-        $new_orders = Order::with('customer.user_details')->where('order_status', 'N')->orderBy('created_at')->get();
+        $new_orders = Payment::with('order.details.product', 'order.details.weight')->where('payment_status', 'U')->get();
         $orders = Payment::with('order.details.product', 'order.details.weight')->where('payment_status', 'F')->get();
         return view('content.admin.order.dashboards-order', compact('new_orders', 'orders'));
     }
@@ -95,6 +94,7 @@ class Orders extends Controller
     {
         $update_order = Order::where('id', $id)->update(
             ['order_status' => 'P',
+                'fullfillment_status' => 'F',
                 'preparing_at' => now(),
                 'preparing_by' => Auth::user()->username,
             ]
@@ -158,7 +158,7 @@ class Orders extends Controller
         return redirect()->route('dashboard-order');
     }
 
-    public function order_complete($id)
+    public function order_complete($id, $page)
     {
         $update_order = Order::where('id', $id)->update(
             ['order_status' => 'C',
@@ -171,7 +171,13 @@ class Orders extends Controller
         } else {
             Session::flash('error', 'Failed. Please try again later.');
         }
-        return redirect()->route('dashboard-order');
+        if ($page == 'A') {
+
+            return redirect()->route('dashboard-order');
+        } elseif ($page == 'C') {
+            return redirect()->route('dashboard-customer');
+
+        }
     }
 
     public function order_complete_detail(Request $request)

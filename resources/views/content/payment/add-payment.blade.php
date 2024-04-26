@@ -16,116 +16,117 @@
 @endsection
 
 @section('content')
-    <form id="formAuthentication" class="mb-3" action="{{ route('order-payment', ['id' => $user->id]) }}"
+    <form id="formAuthentication" class="mb-3" action="{{ route('order-payment', ['id' => $customer->id]) }}"
         enctype="multipart/form-data" method="POST">
         @csrf
-        <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
-        <input type="hidden" name="order_id" id="order_id" value="{{ $order->id }}">
+        <input type="hidden" name="user_id" id="user_id" value="{{ $customer->id }}">
+        {{-- <input type="hidden" name="order_id" id="order_id" value="{{ $order->id }}"> --}}
         <div class="row">
             <div class="col-md-12">
 
                 <div class="card w-75 h-100 mx-auto py-2">
                     <h6 class="p-2 mb-4"><span class="text-muted fw-light">Checkout/</span> Customer Details</h6>
                     <div class="row gy-4 p-4">
-                        <form id="formAuthentication" class="mb-3"
-                            action="{{ route('order-payment', ['id' => $user->id]) }}" method="POST">
-                            @csrf
 
-                            <div class="col-12">
-                                <div class="row align-item-center gy-4">
-                                    <div class="col-12 col-md-6">
-                                        <div>
-                                            <p>Delivery Method</p>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="radioDeliveryMethod"
-                                                    id="radioDeliveryMethod1" value="1">
-                                                <label class="form-check-label" for="radioDeliveryMethod1">
-                                                    Pickup
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="radioDeliveryMethod"
-                                                    id="radioDeliveryMethod2" value="2" checked>
-                                                <label class="form-check-label" for="radioDeliveryMethod2">
-                                                    Delivery
-                                                </label>
-                                            </div>
+
+                        <div class="col-12">
+                            <div class="row align-item-center gy-4">
+                                <div class="col-12 col-md-6">
+                                    <div>
+                                        <p>Delivery Method</p>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="radioDeliveryMethod"
+                                                id="radioDeliveryMethod1" value="1">
+                                            <label class="form-check-label" for="radioDeliveryMethod1">
+                                                Pickup
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="radioDeliveryMethod"
+                                                id="radioDeliveryMethod2" value="2" checked>
+                                            <label class="form-check-label" for="radioDeliveryMethod2">
+                                                Delivery
+                                            </label>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <hr>
-                                    <div class="col-12 col-md-12">
-                                        <p>Customer Details</p>
-                                        <table id="orderTable" class="table table-bordered">
-                                            <thead>
-                                                <tr>
+                                <hr>
+                                <div class="col-12 col-md-12">
+                                    <p>Customer Details</p>
+                                    <table id="orderTable" class="table table-bordered">
+                                        <thead>
+                                            {{-- <tr>
                                                     <th scope="col">#Order Id: </th>
                                                     <th scope="col" colspan="3"><span
                                                             id="order_id">{{ $order->id }}</span>
                                                     </th>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="col">Customer Name: </th>
-                                                    <th scope="col" colspan="3">
-                                                        <input type="text" id="customer_name" name="customer_name"
-                                                            value="{{ $order->customer->user_details->fname . ' ' . $order->customer->user_details->lname }}"
-                                                            class="form-control" required />
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="col">Customer Address: </th>
-                                                    <th scope="col" colspan="3">
-                                                        <input type="text" id="customer_address" name="customer_address"
-                                                            value="{{ $order->customer->user_details->address_1 . ' ' . $order->customer->user_details->address_2 }}"
-                                                            class="form-control" required />
-                                                    </th>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="col">Customer Contact: </th>
-                                                    <th scope="col" colspan="3">
-                                                        <input type="text" id="customer_contact" name="customer_contact"
-                                                            value="" class="form-control" autofocus required />
+                                                </tr> --}}
+                                            <tr>
+                                                <th scope="col">Customer Name: </th>
+                                                <th scope="col" colspan="3">
+                                                    <input type="text" id="customer_name" name="customer_name"
+                                                        value="{{ $customer->user_details->fname . ' ' . $customer->user_details->lname }}"
+                                                        class="form-control" required />
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Customer Address: </th>
+                                                <th scope="col" colspan="3">
+                                                    <input type="text" id="customer_address" name="customer_address"
+                                                        value="{{ $customer->user_details->address_1 . ' ' . $customer->user_details->address_2 }}"
+                                                        class="form-control" required />
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Customer Contact: </th>
+                                                <th scope="col" colspan="3">
+                                                    <input type="text" id="customer_contact" name="customer_contact"
+                                                        value="" class="form-control" autofocus required />
 
-                                                        <span style="display: none;" id="validate_contact"
-                                                            class="text-danger text-capitalize">Phone number must be at
-                                                            least 10 digits.</span>
+                                                    <span style="display: none;" id="validate_contact"
+                                                        class="text-danger text-capitalize">Phone number must be at
+                                                        least 10 digits.</span>
 
-                                                    </th>
-                                                </tr>
-                                            </thead>
+                                                </th>
+                                            </tr>
+                                        </thead>
 
-                                        </table>
+                                    </table>
 
-                                        <hr>
-                                        <p>Order Items</p>
-                                        <table id="orderTable2" class="table table-bordered pt-2">
-                                            <thead>
+                                    <hr>
+                                    <p>Order Items</p>
+                                    <table id="orderTable2" class="table table-bordered pt-2">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Name</th>
+                                                <th>Quantity</th>
+                                                <th>Sub Total</th>
+                                            </tr>
+                                            @foreach ($cart as $item)
                                                 <tr>
-                                                    <th>No</th>
-                                                    <th>Name</th>
-                                                    <th>Quantity</th>
-                                                    <th>Sub Total</th>
+                                                    <th>{{ $loop->iteration }} </th>
+                                                    <th>{{ $item->product->product_name }} ({{ $item->weight->description }})</th>
+                                                    <th>{{ $item->product_qty }} </th>
+                                                    <th>{{ $item->sub_total }}</th>
                                                 </tr>
-                                                @foreach ($order->details as $item)
-                                                    <tr>
-                                                        <th>{{ $loop->iteration }} </th>
-                                                        <th>{{ $item->product->product_name }}</th>
-                                                        <th>{{ $item->product_qty }} </th>
-                                                        <th>{{ $item->sub_total }}</th>
-                                                    </tr>
-                                                @endforeach
-                                                <tr>
-                                                    <th colspan="2"></th>
-                                                    <th> Total Amount</th>
-                                                    <th> <span id="total_amount">{{ $order->total_amount }}</span></th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                        <input type="hidden" name="total_amount" value="{{ $order->total_amount }}">
-                                    </div>
+                                            @endforeach
+                                            <tr>
+                                                <th colspan="2"></th>
+                                                <th> Total Amount</th>
+                                                <th> <span
+                                                        id="total_amount">{{ number_format($cart->sum('sub_total') ?? 0, 2) }}</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <input type="hidden" name="total_amount"
+                                        value="{{ number_format($cart->sum('sub_total') ?? 0, 2) }}">
                                 </div>
-
                             </div>
+
+                        </div>
 
                     </div>
                 </div>

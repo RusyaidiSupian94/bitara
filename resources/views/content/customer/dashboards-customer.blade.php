@@ -138,8 +138,8 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
-                    @if ($totalCart > 0)
-                        @foreach ($order as $cartorder)
+                    @if ($cart->count() > 0)
+                        @foreach ($cart as $cartorder)
                             <div class="card mb-3" style="max-width: 540px;">
                                 <div class="row g-0">
                                     <div class="col-md-4">
@@ -164,10 +164,9 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">Total Amount :
-                                            {{ $cartorder->order->total_amount ?? 0 }}</h5>
-                                        <a href="{{ route('checkout', ['id' => $cartorder->order->id ?? 0]) }}"
-                                            class="btn btn-success">Checkout</a>
+                                        <h5 class="card-title">Total Amount
+                                            :{{ number_format($cart->sum('sub_total') ?? 0, 2) }}</h5>
+                                        <a href="{{ route('add-payment') }}" class="btn btn-success">Checkout</a>
                                     </div>
                                 </div>
                             </div>
@@ -209,12 +208,17 @@
                                                 <span>Order received by seller.</span>
                                             @elseif ($op->order_status == 'P')
                                                 <span>Seller is preparing your order.</span>
-                                            @elseif ($op->order_status == 'R' && $op->delivery_method == 1)
+                                            @elseif ($op->order_status == 'R' && $op->payment->delivery_method == 1)
                                                 <span>Order is ready for pickup.</span>
-                                            @elseif ($op->order_status == 'R' && $op->delivery_method == 2)
+                                            @elseif ($op->order_status == 'R' && $op->payment->delivery_method == 2)
                                                 <span>Order is ready for delivery.</span>
-                                            @elseif ($op->order_status == 'D' && $op->delivery_method == 2)
+                                            @elseif ($op->order_status == 'D' && $op->payment->delivery_method == 2)
                                                 <span>Your order is out for delivery.</span>
+                                                <div class="pt-2">
+
+                                                    <a href="{{ route('complete-order', ['id' => $op->id,'page' => 'C']) }}"
+                                                              class="btn btn-sm btn-success">Order Received</a>
+                                                </div>
                                             @elseif ($op->order_status == 'C')
                                                 <span>Your order is completed.</span>
                                             @endif
@@ -242,7 +246,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            var item = {{ $totalCart }};
+            var item = {{ $cart->count() }};
             if (item > 0) {
                 $('#offcanvasRight').offcanvas('show');
             }

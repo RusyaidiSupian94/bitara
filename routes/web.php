@@ -65,7 +65,7 @@ Route::get('/order-prepare/{id}', [Orders::class, 'order_prepare'])->name('prepa
 Route::get('/order-cancel/{id}', [Orders::class, 'order_cancel'])->name('cancel-order');
 Route::get('/order-ready/{id}', [Orders::class, 'order_ready'])->name('ready-order');
 Route::get('/order-deliver/{id}', [Orders::class, 'order_deliver'])->name('deliver-order');
-Route::get('/order-complete/{id}', [Orders::class, 'order_complete'])->name('complete-order');
+Route::get('/order-complete/{id}/{page}', [Orders::class, 'order_complete'])->name('complete-order');
 Route::get('/order-complete-detail', [Orders::class, 'order_complete_detail'])->name('complete-order-detail');
 Route::get('/order-add', [Orders::class, 'order_add'])->name('add-order');
 Route::get('/order-edit/{id}', [Orders::class, 'order_edit'])->name('edit-order');

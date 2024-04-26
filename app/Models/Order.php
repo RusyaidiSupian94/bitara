@@ -18,6 +18,7 @@ class Order extends Model
         [
         'customer_id',
         'order_status',
+        'order_type',
         'date',
         'total_amount',
         'fullfillment_status',
@@ -40,6 +41,10 @@ class Order extends Model
     public function customer()
     {
         return $this->hasOne(User::class, 'id', 'customer_id');
+    }
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class, 'id', 'order_id');
     }
 
     use HasFactory;
