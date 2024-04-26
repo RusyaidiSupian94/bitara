@@ -75,10 +75,10 @@ Route::get('/manual-order-dashboard', [Orders::class, 'manual_order_dashboard'])
 Route::get('/customer-dashboard', [Customer::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
 Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
-Route::get('/checkout/{id}', [Customer::class, 'checkout'])->name('checkout');
+// Route::get('/checkout', [Customer::class, 'checkout'])->name('checkout');
 
 //payment
-Route::get('/payment-add/{id}', [Customer::class, 'add_payment'])->name('add-payment');
+Route::get('/payment-add', [Customer::class, 'add_payment'])->name('add-payment');
 Route::post('/payment-order/{id}', [Customer::class, 'order_payment'])->name('order-payment');
 
 // layout
