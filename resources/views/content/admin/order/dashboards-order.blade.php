@@ -30,10 +30,7 @@
                                         <th>No</th>
                                         <th>Customer Name</th>
                                         <th>Order Date</th>
-                                        <th>Fulfillment</th>
                                         <th>Delivery Method</th>
-                                        <th>Order Details</th>
-                                        <th>Payment Details</th>
                                         <th>Total</th>
                                         <th>Process</th>
                                     </tr>
@@ -44,46 +41,24 @@
                                             <td>{{ $loop->iteration }}</td>
                                             <td>{{ $n_order->customer->user_details->fname }}</td>
                                             <td>{{ date('d-m-Y h:i a', strtotime($n_order->date)) }}</td>
-
-                                            @if ($n_order->fullfillment_status == 'U')
-                                                <td><span
-                                                        class="badge rounded-pill bg-label-danger me-1">Unfulfillment</span>
-                                                </td>
-                                            @else
-                                                <td><span
-                                                        class="badge rounded-pill bg-label-success me-1">Fulfillment</span>
-                                                </td>
-                                            @endif
-
                                             <td>
                                                 @if ($n_order->delivery_method == 1)
-                                                    Delivery
-                                                @else
                                                     Pickup
+                                                @else
+                                                    Delivery
                                                 @endif
-                                            </td>
-                                            <td class="text-center">
-                                                <a onclick="displayOrderDetails({{ $n_order->id }});"
-                                                    class="btn
-                                                        btn-sm btn-text-danger">
-                                                    <i
-                                                        class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i></a>
-                                            </td>
-                                            <td class="text-center"> <button type="button" class="btn "
-                                                    data-bs-toggle="modal" data-bs-target="#paymentDetailModal">
-                                                    <i
-                                                        class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
-                                                </button>
                                             </td>
                                             <td class="text-center">{{ $n_order->total_amount }}</td>
                                             <td>
                                                 <div class="dropdown">
-                                                    @if ($n_order->fullfillment_status == 'F')
+                                                    <a href="{{ route('process-order', ['id' => $n_order->id]) }}"
+                                                        class="btn btn-sm btn-success">Process Order</a>
+                                                    {{-- @if ($n_order->fullfillment_status == 'F')
                                                         <a href="{{ route('prepare-order', ['id' => $n_order->id]) }}"
                                                             class="btn btn-sm btn-success">Prepare Order</a>
                                                     @endif
                                                     <a href="{{ route('cancel-order', ['id' => $n_order->id]) }}"
-                                                        class="btn btn-sm btn-danger">Cancel</a>
+                                                        class="btn btn-sm btn-danger">Cancel</a> --}}
                                                 </div>
                                             </td>
                                         </tr>
@@ -101,12 +76,13 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Customer Name</th>
+                                        <th>Customer Contact</th>
                                         <th>Customer Address</th>
                                         <th>Order Date</th>
                                         <th>Order Details</th>
                                         <th>Delivery Method</th>
                                         <th>Total</th>
-                                        <th>Status</th>
+                                        <th>Current Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -114,12 +90,13 @@
                                     @foreach ($orders as $order)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $order->customer->user_details->fname }}</td>
-                                            <td>{{ $order->customer->user_details->address_1 . ' ' . $order->customer->user_details->address_2 }}
+                                            <td>{{ $order->customer_name }}</td>
+                                            <td>{{ $order->customer_contact }}</td>
+                                            <td>{{ $order->customer_address }}
                                             </td>
-                                            <td>{{ date('d-m-Y h:i a', strtotime($order->date)) }}</td>
+                                            <td>{{ date('d-m-Y h:i a', strtotime($order->order->date)) }}</td>
                                             <td class="text-center">
-                                                <a onclick="displayOrderDetails({{ $order->id }});"
+                                                <a onclick="displayOrderDetails({{ $order->order_id }});"
                                                     class="btnbtn-sm btn-text-danger">
                                                     <i
                                                         class="mdi mdi-information-slab-circle-outline mdi-24px text-info"></i>
@@ -127,48 +104,63 @@
                                             </td>
                                             <td class="text-center">
                                                 @if ($order->delivery_method == 1)
-                                                    Delivery
-                                                @elseif($order->delivery_method == 2)
                                                     Pickup
+                                                @elseif($order->delivery_method == 2)
+                                                    Delivery
                                                 @else
                                                     N/A
                                                 @endif
                                             </td>
-                                            <td class="text-center">{{ $order->total_amount }}</td>
-                                            @if ($order->order_status == 'P')
-                                                <td><span class="badge rounded-pill bg-label-warning me-1">Preparing</span>
+                                            <td class="text-center">{{ $order->payment_amount }}</td>
+                                            @if ($order->order->order_status == 'P')
+                                                <td><span class="badge rounded-pill bg-label-warning me-1">Preparing
+                                                        Order</span>
                                                 </td>
+
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <a href="{{ route('ready-order', ['id' => $order->order_id]) }}"
+                                                            class="btn btn-sm btn-info">Order Ready</a>
+                                                    </div>
+                                                </td>
+                                            @elseif ($order->order->order_status == 'R')
                                                 @if ($order->delivery_method == 1)
-                                                    <td>
-                                                        <div class="dropdown">
-                                                            <a href="{{ route('deliver-order', ['id' => $order->id]) }}"
-                                                                class="btn btn-sm btn-info">Delivery</a>
-                                                        </div>
+                                                    <td><span class="badge rounded-pill bg-label-warning me-1">Order is
+                                                            ready to pickup</span>
                                                     </td>
-                                                @else
                                                     <td>
                                                         <div class="dropdown">
-                                                            <a href="{{ route('complete-order', ['id' => $order->id]) }}"
+                                                            <a href="{{ route('complete-order', ['id' => $order->order_id]) }}"
                                                                 class="btn btn-sm btn-success">Complete</a>
                                                         </div>
                                                     </td>
+                                                @else
+                                                    <td><span class="badge rounded-pill bg-label-warning me-1">Order is
+                                                            ready to deliver</span>
+                                                    </td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a href="{{ route('deliver-order', ['id' => $order->order_id]) }}"
+                                                                class="btn btn-sm btn-info">Delivery</a>
+                                                        </div>
+                                                    </td>
                                                 @endif
-                                            @elseif ($order->order_status == 'D')
-                                                <td><span class="badge rounded-pill bg-label-info me-1">Delivering</span>
+                                            @elseif ($order->order->order_status == 'D')
+                                                <td><span class="badge rounded-pill bg-label-info me-1">Out for delivery</span>
                                                 </td>
                                                 <td>
                                                     <div class="dropdown">
-                                                        <a href="{{ route('complete-order', ['id' => $order->id]) }}"
+                                                        <a href="{{ route('complete-order', ['id' => $order->order_id]) }}"
                                                             class="btn btn-sm btn-success">Complete</a>
                                                     </div>
                                                 </td>
-                                            @elseif ($order->order_status == 'C')
+                                            @elseif ($order->order->order_status == 'C')
                                                 <td><span class="badge rounded-pill bg-label-success me-1">Completed</span>
                                                 </td>
                                                 <td>
                                                     <div class="dropdown">
                                                         <a target="_blank"
-                                                            href="{{ route('complete-order-detail', ['id' => $order->id, 'page' => 'o']) }}">
+                                                            href="{{ route('complete-order-detail', ['id' => $order->order_id, 'page' => 'o']) }}">
                                                             <button id="completeModal" type="button"
                                                                 class="btn btn-sm btn-success">
                                                                 Details

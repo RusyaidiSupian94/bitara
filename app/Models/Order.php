@@ -22,15 +22,22 @@ class Order extends Model
         'total_amount',
         'fullfillment_status',
         'created_at',
-        'updated_status_by',
-        'updated_status_at',
+        'updated_at',
+        'preparing_at',
+        'preparing_by',
+        'ready_at',
+        'ready_by',
+        'delivering_at',
+        'delivering_by',
+        'completed_at',
+        'completed_by',
     ];
 
-     public function details()
+    public function details()
     {
         return $this->hasMany(OrderDetail::class, 'order_id', 'id');
     }
-     public function customer()
+    public function customer()
     {
         return $this->hasOne(User::class, 'id', 'customer_id');
     }

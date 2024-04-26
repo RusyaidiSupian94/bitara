@@ -29,16 +29,11 @@ class Payment extends Model
         'payment_status',
         'crated_at',
         'updated_at',
-        'order_status',
     ];
 
-     public function details()
+    public function order()
     {
-        return $this->hasMany(OrderDetail::class, 'order_id', 'id');
-    }
-     public function customer()
-    {
-        return $this->hasOne(User::class, 'id', 'customer_id');
+        return $this->hasOne(Order::class, 'id', 'order_id');
     }
 
     use HasFactory;

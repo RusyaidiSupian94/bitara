@@ -61,8 +61,10 @@ Route::post('/product-store-edited/{id}', [Analytics::class, 'product_store_edit
 
 Route::get('/order-dashboard', [Orders::class, 'order_dashboard'])->name('dashboard-order');
 Route::get('/order-datatable', [Orders::class, 'order_datatable'])->name('datatable-order');
+Route::get('/order-process/{id}', [Orders::class, 'order_process'])->name('process-order');
 Route::get('/order-prepare/{id}', [Orders::class, 'order_prepare'])->name('prepare-order');
 Route::get('/order-cancel/{id}', [Orders::class, 'order_cancel'])->name('cancel-order');
+Route::get('/order-ready/{id}', [Orders::class, 'order_ready'])->name('ready-order');
 Route::get('/order-deliver/{id}', [Orders::class, 'order_deliver'])->name('deliver-order');
 Route::get('/order-complete/{id}', [Orders::class, 'order_complete'])->name('complete-order');
 Route::get('/order-complete-detail', [Orders::class, 'order_complete_detail'])->name('complete-order-detail');

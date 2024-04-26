@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\UOM;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class Orders extends Controller
     {
 
         $new_orders = Order::with('customer.user_details')->where('order_status', 'N')->orderBy('created_at')->get();
-        $orders = Order::with('customer.user_details')->whereIn('order_status', ['P', 'D', 'C'])->orderBy('created_at')->get();
+        $orders = Payment::with('order.details.product', 'order.details.weight')->where('payment_status', 'F')->get();
         return view('content.admin.order.dashboards-order', compact('new_orders', 'orders'));
     }
     public function manual_order_dashboard()
@@ -80,8 +81,14 @@ class Orders extends Controller
 
         $orderDetails = OrderDetail::where('order_id', $add_order->id)->sum('total');
         $update_order = Order::where('id', $add_order->id)->update([
-            'total_amount' => $orderDetails->total
+            'total_amount' => $orderDetails->total,
         ]);
+    }
+
+    public function order_process($id)
+    {
+        $payment = Payment::with('order.details.product', 'order.details.weight')->where('order_id', $id)->first();
+        return view('content.admin.order.new-order-detail', compact('payment'));
     }
 
     public function order_prepare($id)
@@ -90,6 +97,10 @@ class Orders extends Controller
             ['order_status' => 'P',
                 'preparing_at' => now(),
                 'preparing_by' => Auth::user()->username,
+            ]
+        );
+        $update_payment = Payment::where('order_id', $id)->update(
+            ['payment_status' => 'F',
             ]
         );
 
@@ -104,7 +115,7 @@ class Orders extends Controller
     public function order_cancel($id)
     {
         $update_order = Order::where('id', $id)->update(
-            ['order_status' => 'R']
+            ['order_status' => 'CN']
         );
 
         if ($update_order) {
@@ -116,6 +127,21 @@ class Orders extends Controller
         return redirect()->route('dashboard-order');
     }
 
+    public function order_ready($id)
+    {
+        $update_order = Order::where('id', $id)->update(
+            ['order_status' => 'R',
+                'ready_at' => now(),
+                'ready_by' => Auth::user()->username]
+        );
+
+        if ($update_order) {
+            Session::flash('success', 'Order is ready for customer..');
+        } else {
+            Session::flash('error', 'Failed. Please try again later.');
+        }
+        return redirect()->route('dashboard-order');
+    }
     public function order_deliver($id)
     {
         $update_order = Order::where('id', $id)->update(
