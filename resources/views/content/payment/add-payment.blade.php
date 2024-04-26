@@ -16,9 +16,11 @@
 @endsection
 
 @section('content')
-    <form id="formAuthentication" class="mb-3" action="{{ route('order-payment', ['id' => $user->id]) }}" method="POST">
+    <form id="formAuthentication" class="mb-3" action="{{ route('order-payment', ['id' => $user->id]) }}"
+        enctype="multipart/form-data" method="POST">
         @csrf
         <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
+        <input type="hidden" name="order_id" id="order_id" value="{{ $order->id }}">
         <div class="row">
             <div class="col-md-12">
 
@@ -82,7 +84,12 @@
                                                     <th scope="col">Customer Contact: </th>
                                                     <th scope="col" colspan="3">
                                                         <input type="text" id="customer_contact" name="customer_contact"
-                                                            value="" class="form-control"autofocus required />
+                                                            value="" class="form-control" autofocus required />
+
+                                                        <span style="display: none;" id="validate_contact"
+                                                            class="text-danger text-capitalize">Phone number must be at
+                                                            least 10 digits.</span>
+
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -114,6 +121,7 @@
                                                 </tr>
                                             </thead>
                                         </table>
+                                        <input type="hidden" name="total_amount" value="{{ $order->total_amount }}">
                                     </div>
                                 </div>
 
@@ -208,8 +216,8 @@
                             <div class="row py-3">
                                 <div class="col-md-12">
                                     <div class="form-floating form-floating-outline mb-4">
-                                        <input type="file" class="form-control" id="payment_receipt" name="payment_receipt"
-                                            autofocus required />
+                                        <input type="file" class="form-control" id="payment_receipt"
+                                            name="payment_receipt" autofocus required />
                                         <label for="payment_receipt">Payment Receipt</label>
                                     </div>
                                 </div>
@@ -227,8 +235,6 @@
                                     </a>
                                 </div>
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -262,6 +268,15 @@
                     // Hide the div with ID 'transfer'
                     $('#qr').show();
                     $('#transfer').hide();
+                }
+            });
+            $('#customer_contact').on('input', function() {
+
+                var phoneNumber = $(this).val().replace(/\D/g, '');
+                if (phoneNumber.length > 0 && phoneNumber.length < 10) {
+                    $('#validate_contact').show();
+                } else {
+                    $('#validate_contact').hide();
                 }
             });
         });

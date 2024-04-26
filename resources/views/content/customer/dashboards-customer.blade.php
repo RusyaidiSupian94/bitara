@@ -18,9 +18,10 @@
 @section('content')
     <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
     <div>
-        <img  src="{{ asset('assets/img/backgrounds/banner.jpg') }}" width="100%" height="15%" style="object-fit: cover"  alt="Banner Image">
+        <img src="{{ asset('assets/img/backgrounds/banner.jpg') }}" width="100%" height="15%" style="object-fit: cover"
+            alt="Banner Image">
     </div>
-        
+
     <!-- Add banner image here -->
 
     <div class="card w-100 h-100">
@@ -42,11 +43,20 @@
                     @endforeach
 
                 </div>
-                <div class="col-md-12 d-flex justify-content-end">
-                    <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
-                        aria-controls="offcanvasRight">
-                        <i class="mdi mdi-cart mdi-24px"></i></button>
+                <div class="row">
+                    <div class="col-md-12 d-flex justify-content-end">
+                        <button class="btn p-0 px-3" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasRightPayment" aria-controls="offcanvasRightPayment">
+                            <i class="mdi mdi-package-check mdi-24px"></i>
+                        </button>
+                        <button class="btn p-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                            aria-controls="offcanvasRight">
+                            <i class="mdi mdi-cart mdi-24px"></i>
+                        </button>
+                    </div>
+
                 </div>
+
                 <br>
                 <div class="row gy-4">
                     <!-- Product List from database -->
@@ -150,7 +160,6 @@
                                 </div>
                             </div>
                         @endforeach
-                        {{-- @if ($totalCart > 0) --}}
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="card">
@@ -163,14 +172,61 @@
                                 </div>
                             </div>
                         </div>
-                        {{-- @endif --}}
+                    @else
+                        <p>Cart is empty</p>
+                    @endif
                 </div>
-            @else
-                <p>Cart is empty</p>
-                @endif
+            </div>
+
+
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRightPayment"
+                aria-labelledby="offcanvasRightPaymentLabel">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasRightPaymentLabel">Order List</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    @foreach ($order_paid as $op)
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+
+                                <div class="col-md-12">
+                                    <div class="card-body">
+                                        <h6>Order Id: {{ $op->id }}</h6>
+                                        @foreach ($op->details as $opd)
+                                            {{-- <h5 class="card-title">Product : {{ $opd->product_name }}
+                                            </h5>
+                                            <p class="card-text">Quantity : {{ $opd->product_qty }}</p>
+                                            <p class="card-text">Total : {{ $opd->sub_total }}</p> --}}
+                                            <p>{{ $opd->product->product_name }}({{ $opd->weight->description }}) x
+                                                {{ $opd->product_qty }} =
+                                                {{ $opd->sub_total }}</p>
+                                        @endforeach
+                                        <hr>
+                                        <p class="card-text">Order Status :
+                                            @if ($op->order_status == 'N')
+                                                <span>Order received by seller.</span>
+                                            @elseif ($op->order_status == 'P')
+                                                <span>Seller is preparing your order.</span>
+                                            @elseif ($op->order_status == 'R' && $op->delivery_method == 1)
+                                                <span>Order is ready for pickup.</span>
+                                            @elseif ($op->order_status == 'R' && $op->delivery_method == 2)
+                                                <span>Order is ready for delivery.</span>
+                                            @elseif ($op->order_status == 'D' && $op->delivery_method == 2)
+                                                <span>Your order is out for delivery.</span>
+                                            @elseif ($op->order_status == 'C')
+                                                <span>Your order is completed.</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
-    </div>
     </div>
 @endsection
 

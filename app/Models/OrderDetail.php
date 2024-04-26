@@ -19,6 +19,7 @@ class OrderDetail extends Model
         'order_id',
         'product_id',
         'product_qty',
+        'product_uom',
         'sub_total',
     ];
 
@@ -27,6 +28,10 @@ class OrderDetail extends Model
     public function product()
     {
         return $this->hasOne(Product::class, 'id', 'product_id');
+    }
+    public function weight()
+    {
+        return $this->hasOne(UOM::class, 'id', 'product_uom');
     }
     public function order()
     {

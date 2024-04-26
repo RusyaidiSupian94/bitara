@@ -5,9 +5,11 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\Payment;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class Customer extends Controller
 {
@@ -125,16 +127,47 @@ class Customer extends Controller
     }
     public function order_payment(Request $request, $id)
     {
-
-        $user = Auth::user();
-        $update_order = Order::where('customer_id', $id)->update([
-            'fullfillment_status' => 'F',
+        $payment = Payment::create([
+            'order_id' => $request->order_id,
+            'customer_id' => $request->user_id,
+            'customer_name' => $request->customer_name,
+            'customer_address' => $request->customer_address,
+            'customer_contact' => $request->customer_contact,
             'delivery_method' => $request->radioDeliveryMethod,
+            'payment_date' => now(),
+            'payment_amount' => $request->total_amount,
             'payment_method' => $request->radioPaymentMethod,
-            'updated_at' => now(),
+            'payment_receipt' => $request->payment_receipt,
+            'payment_status' => 'U',
+            'created_at' => now(),
         ]);
-        // return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart'));
 
+        if ($request->hasFile('payment_receipt')) {
+
+            $attachment = $request->file('payment_receipt');
+            $att_name = $attachment->getClientOriginalName();
+            $filename = pathinfo($att_name, PATHINFO_FILENAME);
+            $extension = $attachment->getClientOriginalExtension();
+            $fileNameToStore = $filename . '_' . rand() . '.' . $extension;
+            $path = $attachment->move(storage_path('app/public/payment/'), $fileNameToStore);
+
+            $uptm = Payment::where('id', $id)->update([
+                'payment_receipt' => $request->payment_receipt,
+            ]);
+        }
+
+        if ($payment) {
+            $update_order = Order::where('id', $request->order_id)->update([
+                'fullfillment_status' => 'F',
+            ]);
+        }
+
+        if ($update_order) {
+
+            Session::flash('success', 'Payment process success!');
+        } else {
+            Session::flash('error', 'Payment process failed. Please try again later.');
+        }
         return redirect()->route('dashboard-customer');
     }
 }

@@ -43,9 +43,10 @@ class Analytics extends Controller
             $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U');
         })->get();
 
-        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
+        $order_paid = Order::with('details.product','details.weight')->where('customer_id', $user->id)->whereNotIn('order_status', ['T'])->where('fullfillment_status', 'F')->get();
 
-        return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category'));
+        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
+        return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category', 'order_paid'));
     }
     public function product_dashboard()
     {
