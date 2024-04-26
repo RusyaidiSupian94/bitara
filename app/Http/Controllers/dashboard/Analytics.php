@@ -65,7 +65,8 @@ class Analytics extends Controller
         $products = Product::orderBy('created_at')->get();
         //$orders = Order::with('customer.user_details')->orderBy('created_at')->get();
         // $orderDetails = OrderDetail::select('product_id');
-        $order_id = Payment::with('details')->toArray();
+
+        $payments = Payment::with('order')->get();
         //dd($payments);
         $product_id = Product::pluck('id')->toArray();
         foreach ($product_id as $key => $value) {

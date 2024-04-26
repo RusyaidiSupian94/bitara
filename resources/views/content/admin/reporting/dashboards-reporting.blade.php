@@ -72,27 +72,7 @@
                         <!-- Ordering -->
 
                         <div class="tab-pane fade show active" id="order-tab-pane" role="tabpanel" aria-labelledby="order-tab" tabindex="0">
-                            <div class="row gy-4">
-                                <div class="col-md-3">
-                                    <form action="" method="GET">
-                                        <label for="start_date">Start Date:</label>
-                                        <input type="date" id="start_date" name="start_date">
 
-                                        <label for="end_date">End Date:</label>
-                                        <input type="date" id="end_date" name="end_date">
-
-                                        <button type="submit">Filter</button>
-                                    </form>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>End Date:</label>
-                                    <input type="date" class="form-control" />
-                                </div>
-                                <div class="col-md-1 pt-4">
-                                    <button class="btn btn-primary">Filter</button>
-                                </div>
-                            </div>
-                            </br>
                             <table id="orderTbl" class="table table-bordered table-sm">
                                 <thead class="table-light">
                                     <tr>
@@ -110,36 +90,36 @@
                                     @foreach ($payments as $payment)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $payment->customer->customer_name }}</td>
+                                        <td>{{ $payment->customer_name }}</td>
                                         <td>{{ $payment->customer_address }}
                                         </td>
-                                        <td>{{ date('d-m-Y h:i a', strtotime($payment->payment_date)) }}</td>
+                                        <td>{{ date('d-m-Y h:i a', strtotime($payment->order->order_date)) }}</td>
                                         <td class="text-center">
                                             @if ($payment->delivery_method == 1)
                                             Delivery
-                                            @elseif($order->delivery_method == 2)
+                                            @elseif($payment->delivery_method == 2)
                                             Pickup
                                             @else
                                             N/A
                                             @endif
                                         </td>
                                         <td class="text-center">{{ $payment->payment_amount }}</td>
-                                        @if ($order->order_status == 'N')
+                                        @if ($payment->order->order_status == 'N')
                                         <td><span class="badge rounded-pill bg-label-info me-1">New Order</span>
                                         </td>
-                                        @elseif ($order->order_status == 'P')
+                                        @elseif ($payment->order->order_status == 'P')
                                         <td><span class="badge rounded-pill bg-label-warning me-1">Preparing</span>
                                         </td>
-                                        @elseif ($order->order_status == 'D')
+                                        @elseif ($payment->order->order_status == 'D')
                                         <td><span class="badge rounded-pill bg-label-info me-1">Delivering</span>
                                         </td>
-                                        @elseif ($order->order_status == 'C')
+                                        @elseif ($payment->order->order_status == 'C')
                                         <td><span class="badge rounded-pill bg-label-success me-1">Completed</span>
                                         </td>
                                         @endif
                                         <td>
                                             <div class="dropdown">
-                                                <a target="_blank" href="{{ route('complete-order-detail', ['id' => $order->id,'page' => 'r']) }}">
+                                                <a target="_blank" href="{{ route('complete-order-detail', ['id' => $payment->order->id,'page' => 'r']) }}">
                                                     <button id="completeModal" type="button" class="btn btn-sm btn-success">
                                                         Details
                                                     </button></a>
