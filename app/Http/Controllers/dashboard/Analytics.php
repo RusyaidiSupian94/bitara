@@ -32,22 +32,22 @@ class Analytics extends Controller
         );
     }
 
-    public function customer_dashboard()
-    {
-        $user = Auth::user();
-        $category = Category::get();
-        $products = Product::with('weight')->get();
-        // $order = Order::with('details')->where('customer_id', $user->id)->where('order_status', 'T')->get();
+    // public function customer_dashboard()
+    // {
+    //     $user = Auth::user();
+    //     $category = Category::get();
+    //     $products = Product::with('weight')->get();
+    //     // $order = Order::with('details')->where('customer_id', $user->id)->where('order_status', 'T')->get();
 
-        $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
-            $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U');
-        })->get();
+    //     $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
+    //         $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U');
+    //     })->get();
 
-        $order_paid = Order::with('details.product', 'details.weight')->where('customer_id', $user->id)->whereNotIn('order_status', ['T'])->where('fullfillment_status', 'F')->get();
+    //     $order_paid = Order::with('details.product', 'details.weight')->where('customer_id', $user->id)->whereNotIn('order_status', ['T'])->where('fullfillment_status', 'F')->get();
 
-        $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
-        return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category', 'order_paid'));
-    }
+    //     $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
+    //     return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category', 'order_paid'));
+    // }
     public function product_dashboard()
     {
         $products = Product::with('category', 'weight')->orderBy('created_at')->get();

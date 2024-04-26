@@ -49,7 +49,6 @@ use Illuminate\Support\Facades\Route;
 // Main Page Route
 Route::get('/', [LoginBasic::class, 'index'])->name('auth-login-basic');
 Route::get('/dashboard', [Analytics::class, 'index'])->name('dashboard-analytics');
-Route::get('/customer-dashboard', [Analytics::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::get('/product-dashboard', [Analytics::class, 'product_dashboard'])->name('dashboard-product');
 Route::get('/reporting-dashboard', [Analytics::class, 'reporting_dashboard'])->name('dashboard-reporting');
 Route::get('/product-add', [Analytics::class, 'product_add'])->name('add-product');
@@ -73,6 +72,7 @@ Route::get('/order-edit/{id}', [Orders::class, 'order_edit'])->name('edit-order'
 Route::post('/order-store', [Orders::class, 'order_store'])->name('store-order');
 Route::get('/manual-order-dashboard', [Orders::class, 'manual_order_dashboard'])->name('dashboard-manual-order');
 
+Route::get('/customer-dashboard', [Customer::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
 Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
 Route::get('/checkout/{id}', [Customer::class, 'checkout'])->name('checkout');
