@@ -31,6 +31,18 @@
       "name": "Reporting",
       "icon": "menu-icon tf-icons mdi mdi-flip-to-front",
       "slug": "reporting"
+    },
+    {
+      "name": "Setting",
+      "icon": "menu-icon tf-icons mdi mdi-cog",
+      "slug": "setting",
+      "submenu": [
+        {
+          "url": "setting/dashboard-staff",
+          "name": "Add Staff",
+          "slug": "setting-add-staff"
+        }
+      ]
     }
   ]
 }
