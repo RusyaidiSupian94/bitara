@@ -56,15 +56,16 @@
                                                 </a>
                                             </td>
                                             <td class="text-center">{{ $order->total_amount }}</td>
+                                            <td class="text-center">{{ $order->total_amount }}</td>
                                             <td>
                                                 <div class="dropdown">
-                                                    <a href="{{ route('edit-order', ['id' => $order->id]) }}"
+                                                    {{-- <a href="{{ route('edit-order', ['id' => $order->id]) }}"
                                                         class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i
                                                             class="mdi mdi-pencil-outline"></i></a>
                                                     <a onclick="deleteOrder({{ $order->id }});"
                                                         class="btn
                                                         btn-sm btn-text-danger rounded-pill btn-icon item-delete"><i
-                                                            class="mdi mdi-trash-can-outline text-danger"></i></a>
+                                                            class="mdi mdi-trash-can-outline text-danger"></i></a> --}}
                                                 </div>
                                             </td>
                                         </tr>

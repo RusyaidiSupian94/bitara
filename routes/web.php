@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\authentications\LoginBasic;
+use App\Http\Controllers\authentications\Profile;
 use App\Http\Controllers\authentications\RegisterBasic;
 use App\Http\Controllers\cards\CardBasic;
 use App\Http\Controllers\dashboard\Analytics;
@@ -104,6 +105,8 @@ Route::get('/auth/forgot-password-basic', [ForgotPasswordBasic::class, 'index'])
 Route::post('/auth/check-login', [LoginBasic::class, 'authenticate'])->name('auth-check-login');
 Route::post('/auth/register-customer', [RegisterBasic::class, 'registerCustomer'])->name('auth-register-customer');
 Route::get('/logout', [LoginBasic::class, 'logout'])->name('logout');
+Route::get('/update-profile/{id}', [Profile::class, 'index'])->name('update-profile');
+Route::post('/save-updated-profile', [Profile::class, 'save'])->name('save-updated-profile');
 // cards
 Route::get('/cards/basic', [CardBasic::class, 'index'])->name('cards-basic');
 
