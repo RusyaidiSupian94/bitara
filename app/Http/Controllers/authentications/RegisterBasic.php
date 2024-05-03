@@ -43,7 +43,7 @@ class RegisterBasic extends Controller
 
         $userrole = UserRole::create([
             'user_id' => $user->id,
-            'role_id' => '2', // default 2 for customer only
+            'role_id' => 3, // default 3 for customer only
         ]);
 
         return redirect()->route('auth-login-basic');

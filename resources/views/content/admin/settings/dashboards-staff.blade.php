@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', 'Products')
+@section('title', 'Staff')
 
 @section('content')
 
@@ -44,14 +44,39 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>No</th>
-                                        <th>Staff Name</th>
                                         <th>Username</th>
+                                        <th>Email</th>
                                         <th>Role</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="table-border-bottom-0">
-                                   
+                                    @foreach ($users as $user)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $user->username }}</td>
+                                            <td>{{ $user->email }}</td>
+                                            @if ($user->role->role_id == 1)
+                                                <td>Admin</td>
+                                            @else
+                                                <td>Staff</td>
+                                            @endif
+                                            <td>
+                                                <div>
+                                                    <a href="{{ route('edit-staff', ['id' => $user->id]) }}"
+                                                        class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i
+                                                        class="mdi mdi-pencil-outline"></i></a>
+                                                        @if($user->id != 1)
+                                                            
+                                                            <a onclick="deletestaff({{ $user->id }});"
+                                                            class="btn
+                                                            btn-sm btn-text-danger rounded-pill btn-icon item-delete"><i
+                                                                class="mdi mdi-trash-can-outline text-danger"></i></a>
+                                                        @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -76,11 +101,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#staffTbl').DataTable();
+            // $('#staffTbl').DataTable();
         });
 
 
-        function deleteProduct(id) {
+        function deletestaff(id) {
             Swal.fire({
                 title: 'Confirm to remove the selected staff?',
                 icon: 'warning',

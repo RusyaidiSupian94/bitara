@@ -30,6 +30,11 @@ class LoginBasic extends Controller
                     return redirect()->route('dashboard-analytics');
                     break;
                 case 2:
+                    //staff
+               return redirect()->route('dashboard-analytics');
+
+                    break;
+                case 3:
                     return redirect()->route('dashboard-customer');
 
                     break;

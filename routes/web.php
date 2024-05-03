@@ -107,5 +107,7 @@ Route::post('/save-updated-profile', [Profile::class, 'save'])->name('save-updat
 
 Route::get('/setting/dashboard-staff', [Staff::class, 'index'])->name('dashboard-staff');
 Route::get('/setting/add-staff', [Staff::class, 'add_staff'])->name('add-staff');
-Route::get('/setting/delete-staff', [Staff::class, 'delete_staff'])->name('delete-staff');
-Route::get('/setting/save-staff', [Staff::class, 'save_staff'])->name('save-staff');
+Route::post('/setting/delete-staff', [Staff::class, 'delete_staff'])->name('delete-staff');
+Route::post('/setting/save-staff', [Staff::class, 'save_staff'])->name('save-staff');
+Route::get('/setting/edit-staff/{id}', [Staff::class, 'edit_staff'])->name('edit-staff');
+Route::post('/setting/save-edited-staff/{id}', [Staff::class, 'save_edited_staff'])->name('save-edited-staff');
