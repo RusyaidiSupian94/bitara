@@ -153,7 +153,7 @@
                                 REGISTER
                             </button>
 
-                     
+
                         </form>
 
                         <p class="text-center">
@@ -204,6 +204,30 @@
                     $('#match').show();
                 } else {
                     $('#match').hide();
+                }
+            });
+
+            $("#registrationForm").on("submit", function(event) {
+                var password = $('#password').val();
+                console.log(password);
+                var confirmPassword = $('#confirm_password').val();
+                if (password > 0) {
+                    if (password.length < 5) {
+                        $('#match').text('Password must be more than 5 digit');
+                        $('#match').show();
+                        event.preventDefault();
+                    } else if (confirmPassword.length > 0 && password != confirmPassword) {
+                        $('#match').text('Password does not match');
+                        $('#match').show();
+                        event.preventDefault();
+                    } else {
+                        $('#match').hide();
+
+                        return true;
+                    }
+                } else {
+
+                    return true;
                 }
             });
         });
