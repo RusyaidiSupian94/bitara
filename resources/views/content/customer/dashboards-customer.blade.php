@@ -100,6 +100,13 @@
                                     </div>
                                     <div class="card-footer">
                                         <div class="row pt-3">
+                                            <div class="col-12 col-md-8 d-flex justify-end">
+                                                <div class="input-radio"><input type="radio" id="250g{{ $product->id }}" name="size" value="250g" checked> <label for="250g{{ $product->id }}">250g</label></div>
+                                                <div class="input-radio"><input type="radio" id="500g{{ $product->id }}" name="size" value="500g"> <label for="500g{{ $product->id }}">500g</label></div>
+                                                <div class="input-radio"><input type="radio" id="1kg{{ $product->id }}" name="size"  value="1kg"> <label for="1kg{{ $product->id }}">1kg</label></div>
+                                            </div>
+                                        </div>
+                                        <div class="row pt-3">
                                             <div class="col-12 col-md-8">
                                                 <div class="input-group input-group-sm mb-3">
                                                     <button class="btn btn-outline-secondary button-minus" type="button"
@@ -237,6 +244,28 @@
 @section('page-style')
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.4/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .input-radio{
+        display: inline-block;
+        margin-right: 10px;
+        margin-top: 30px;
+      }
+      input[type=radio] {
+          display: none;
+        }
+        input[type=radio] + label {
+          padding: 10px;
+          border-radius: 10px;
+          border: 1px solid #ddd;
+       
+        }
+       input[type=radio] + label:hover {
+          border: 1px solid red;
+        }
+        input[type=radio]:checked + label {
+          border: 1px solid red;
+        }
+    </style>
 @endsection
 
 @section('page-script')
@@ -291,7 +320,33 @@
         function addToCart(product_id) {
             var qty = $('#qty' + product_id).val();
             var userid = $('#user_id').val();
-
+            var size = null;
+            if ($('#250g' + product_id).prop('checked')) {
+                size = $('#250g' + product_id).val();
+            } else if ($('#500g' + product_id).prop('checked')) {
+                size = $('#500g' + product_id).val();
+            } else if ($('#1kg' + product_id).prop('checked')) {
+                size = $('#1kg' + product_id).val();
+            }else{
+                size = null;
+            }
+            if(size == null){
+                Swal.fire({
+                title: "Error",
+                text: "Please select size cutting!",
+                icon: "error"
+                });
+                return;
+            }
+            if(qty == 0){
+                Swal.fire({
+                title: "Error",
+                text: "Please add quantity!",
+                icon: "error"
+                });
+                return;
+            }
+            console.log(size);
             $.ajax({
                 type: "POST",
                 url: "{{ route('cart-datatable') }}",
@@ -300,6 +355,7 @@
                     id: product_id,
                     qty: qty,
                     userid: userid,
+                    uomdescription: size, 
                 },
                 success: function(response) {
                     location.reload();
