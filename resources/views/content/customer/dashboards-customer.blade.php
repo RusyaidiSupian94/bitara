@@ -159,7 +159,7 @@
                                             <h5 class="card-title">Product : {{ $cartorder->product->product_name }}
                                             </h5>
                                             <p class="card-text">Quantity : {{ $cartorder->product_qty }} x {{$cartorder->weight->description}}</p>
-                                            <p class="card-text">Unit Price : RM {{ $cartorder->product->unit_price }}</p>
+                                            <p class="card-text">Unit Price : RM {{ $cartorder->product->unit_price / $cartorder->weight->qty }}</p>
                                             <p class="card-text">Sub Total : RM {{ $cartorder->sub_total }}</p>
                                             <button onclick="removeToCart({{ $cartorder->id }});"
                                                 class="btn btn-danger">Remove</button>
@@ -172,8 +172,8 @@
                             <div class="col-md-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h5 class="card-title">Total Amount
-                                            :{{ number_format($cart->sum('sub_total') ?? 0, 2) }}</h5>
+                                        <h5 class="card-title">
+                                            Total Amount : RM {{ number_format($cart->sum('sub_total') ?? 0, 2) }}</h5>
                                         <a href="{{ route('add-payment') }}" class="btn btn-success">Checkout</a>
                                     </div>
                                 </div>
@@ -208,7 +208,7 @@
                                             <p class="card-text">Total : {{ $opd->sub_total }}</p> --}}
                                             <p>{{ $opd->product->product_name }}({{ $opd->weight->description }}) x
                                                 {{ $opd->product_qty }} =
-                                                {{ $opd->sub_total }}</p>
+                                                RM {{ $opd->sub_total }}</p>
                                         @endforeach
                                         <hr>
                                         <p class="card-text">Order Status :

@@ -93,7 +93,7 @@
                                         <td>{{ $payment->customer_name }}</td>
                                         <td>{{ $payment->customer_address }}
                                         </td>
-                                        <td>{{ date('d-m-Y h:i a', strtotime($payment->order->order_date)) }}</td>
+                                        <td>{{ date('d-m-Y h:i a', strtotime($payment->order->date)) }}</td>
                                         <td class="text-center">
                                             @if ($payment->delivery_method == 1)
                                             Delivery
@@ -118,6 +118,9 @@
                                         </td>
                                         @elseif ($payment->order->order_status == 'C')
                                         <td><span class="badge rounded-pill bg-label-success me-1">Completed</span>
+                                        </td>
+                                        @elseif ($payment->order->order_status == 'CN')
+                                        <td><span class="badge rounded-pill bg-label-danger me-1">Order Cancelled</span>
                                         </td>
                                         @endif
                                         <td>
@@ -205,8 +208,8 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $pnlData['product_name'] }}</td>
                                                 <td class="text-center">RM{{ $pnlData['sell_price'] }}</td>
-                                                <td class="text-center">{{ $pnlData['stock_qty'] }}</td>
-                                                <td class="text-center">{{ $pnlData['sell_product_qty'] }}</td>
+                                                <td class="text-center">{{ $pnlData['stock_qty'] }} kg</td>
+                                                <td class="text-center">{{ $pnlData['sell_product_qty'] }} kg</td>
                                                 <td class="text-center">RM{{ $pnlData['total_sell'] }}</td>
                                             </tr>
                                             @endforeach

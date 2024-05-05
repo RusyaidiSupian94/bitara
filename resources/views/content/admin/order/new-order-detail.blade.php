@@ -78,24 +78,24 @@
                             </tr>
                         </thead>
                         <tbody>
-
+                            <tr>
+                                <td colspan="4"> Item </td>
+                            </tr>
+                            @foreach ($payment->order->details as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }} </td>
+                                <td colspan="2">{{ $item->product->product_name }} ({{ $item->weight->description }}) x {{ $item->product_qty }} </td>
+                                <td>RM {{ $item->sub_total }}</td>
+                            </tr>
+                            @endforeach
                             <tr>
                                 <td colspan="4"> </td>
                             </tr>
                             <tr>
-                                <td colspan="2"> Item</td>
+                                <td colspan="2"></td>
                                 <td> Total Amount</td>
-                                <td> <span id="total_amount">{{ $payment->payment_amount }}</span></td>
+                                <td> <span id="total_amount">RM {{ $payment->payment_amount }}</span></td>
                             </tr>
-                            @foreach ($payment->order->details as $item)
-                                <tr>
-
-                                    <td>{{ $loop->iteration }} </td>
-                                    <td>{{ $item->product->product_name }} ({{ $item->weight->description }})</td>
-                                    <td>{{ $item->product_qty }} </td>
-                                    <td>{{ $item->sub_total }}</td>
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>

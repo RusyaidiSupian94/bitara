@@ -50,16 +50,14 @@
                                             </td>
                                             <td class="text-center">{{ $n_order->payment_amount }}</td>
                                             <td>
+                                                @if($n_order->order->order_status == 'CN')
+                                                <span class="badge rounded-pill bg-label-danger me-1">Order cancelled</span>
+                                                @else
                                                 <div class="dropdown">
                                                     <a href="{{ route('process-order', ['id' => $n_order->order_id]) }}"
                                                         class="btn btn-sm btn-success">Process Order</a>
-                                                    {{-- @if ($n_order->fullfillment_status == 'F')
-                                                        <a href="{{ route('prepare-order', ['id' => $n_order->id]) }}"
-                                                            class="btn btn-sm btn-success">Prepare Order</a>
-                                                    @endif
-                                                    <a href="{{ route('cancel-order', ['id' => $n_order->id]) }}"
-                                                        class="btn btn-sm btn-danger">Cancel</a> --}}
                                                 </div>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach
@@ -181,7 +179,7 @@
 
 
     <!--Order Modal -->
-    <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal modal-lg fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -199,6 +197,7 @@
                                             <th>No</th>
                                             <th>Product Name</th>
                                             <th>Quantity</th>
+                                            <th>Weight</th>
                                             <th>Sub Total</th>
                                         </tr>
                                     </thead>
@@ -384,6 +383,9 @@
                     },
                     {
                         data: 'quantity'
+                    },
+                    {
+                        data: 'weight'
                     },
                     {
                         data: 'sub_total'

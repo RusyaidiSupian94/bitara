@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 
 class Analytics extends Controller
 {
@@ -34,16 +35,16 @@ class Analytics extends Controller
     {
         $data = [];
 
-        $today = now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y');
+        $today = Carbon::now()->timezone('Asia/Kuala_Lumpur')->toDateString();
 
         $filter = $request->filter;
         if ($filter == 1) {
-            $data['sale'] = Order::where('date', now())->sum('total_amount');
-            $data['order'] = Order::where('date', now())->count();
-            $data['delivery'] = Order::with('payment')->where('date', now())->whereHas('payment', function ($payment) {
+            $data['sale'] = Order::whereDate('date', $today)->sum('total_amount');
+            $data['order'] = Order::whereDate('date', $today)->count();
+            $data['delivery'] = Order::with('payment')->whereDate('date', $today)->whereHas('payment', function ($payment) {
                 $payment->where('delivery_method', '1');
             })->count();
-            $data['pickup'] = Order::with('payment')->where('date', now())->whereHas('payment', function ($payment) {
+            $data['pickup'] = Order::with('payment')->whereDate('date', $today)->whereHas('payment', function ($payment) {
                 $payment->where('delivery_method', '2');
             })->count();
         } else {
@@ -60,7 +61,6 @@ class Analytics extends Controller
             $data['pickup'] = Order::with('payment')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('payment', function ($payment) {
                 $payment->where('delivery_method', '2');
             })->count();
-
         }
         return $data;
     }
@@ -68,7 +68,7 @@ class Analytics extends Controller
     {
         $data = [];
 
-        $today = now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y');
+        $today = Carbon::now()->timezone('Asia/Kuala_Lumpur')->toDateString();
         $filter = $request->filter;
         $category = Category::all();
 
@@ -77,7 +77,7 @@ class Analytics extends Controller
         if ($filter == 1) {
             foreach ($category as $key => $ctgy) {
 
-                $data[$ctgy->category_description] = Order::with('details.product')->where('date', now())->whereHas('details.product', function ($p) use ($ctgy) {
+                $data[$ctgy->category_description] = Order::with('details.product')->whereDate('date', $today)->whereHas('details.product', function ($p) use ($ctgy) {
                     $p->where('category_id', $ctgy->id);
                 })->count();
             }
@@ -128,11 +128,7 @@ class Analytics extends Controller
     {
         $array = [];
         $products = Product::orderBy('created_at')->get();
-        //$orders = Order::with('customer.user_details')->orderBy('created_at')->get();
-        // $orderDetails = OrderDetail::select('product_id');
-
         $payments = Payment::with('order')->get();
-        //dd($payments);
         $product_id = Product::pluck('id')->toArray();
         foreach ($product_id as $key => $value) {
             # code...

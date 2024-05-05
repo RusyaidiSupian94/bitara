@@ -30,9 +30,8 @@ class Orders extends Controller
     public function manual_order_dashboard()
     {
 
-        $new_orders = Order::with('customer.user_details')->where('order_status', 'N')->orderBy('created_at')->get();
-        $orders = Order::with('customer.user_details')->whereIn('order_status', ['P', 'D', 'C'])->orderBy('created_at')->get();
-        return view('content.admin.order.dashboards-manual-order', compact('new_orders', 'orders'));
+        $orders = Order::with('customer.user_details')->where('order_type', 'M')->orderBy('created_at')->get();
+        return view('content.admin.order.dashboards-manual-order', compact( 'orders'));
     }
 
     public function order_add()
@@ -256,10 +255,12 @@ class Orders extends Controller
 
     public function order_complete_detail(Request $request)
     {
-        $order = Order::with('customer.user_details', 'details.product')->where('id', $request->id)->first();
+        // $order = Order::with('customer.user_details', 'details.product')->where('id', $request->id)->first();
+        $payment = Payment::with('order.details.product', 'order.details.weight')->where('order_id', $request->id)->first();
+
         $page = $request->page;
 
-        return view('content.admin.order.complete-order-detail', compact('order', 'page'));
+        return view('content.admin.order.complete-order-detail', compact('payment', 'page'));
 
     }
 

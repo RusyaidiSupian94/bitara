@@ -81,14 +81,15 @@ class Customer extends Controller
         if ($order) {
 
             $carts = Cart::with('product', 'weight')->where('customer_id', $id)->get();
-
             foreach ($carts as $key => $item) {
+                $uom = UOM::find($item->product_uom);
+                $totalqty = $item->product_qty / $uom->qty;
                 $order_details = OrderDetail::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
                     'product_qty' => $item->product_qty,
                     'product_uom' => $item->product_uom,
-                    'sub_total' => $item->product->unit_price * $item->product_qty,
+                    'sub_total' => $item->product->unit_price * $totalqty,
                 ]);
             }
         }

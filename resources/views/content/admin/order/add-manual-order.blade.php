@@ -119,7 +119,7 @@
                 // Append row to the table
                 $('#productTable tbody').append('<tr>' +
                     '<td><input name="product_list[' + i + '][id] type="text" value="' + productId +
-                    '" class="form-control total-input" hidden />' + productId + '</td>' +
+                    '" class="form-control total-input" hidden />' + i + '</td>' +
                     '<td>' + productName + '</td>' +
                     '<td>' + weightDropdown + '</td>' +
                     '<td><input name="product_list[' + i +

@@ -19,12 +19,7 @@
     <div class="card w-100 h-100">
         <div class="row gy-4 p-4">
             <div class="col-12">
-                <div class="row gy-4 ">
-                    <div class="col-md-12 d-flex justify-content-end">
-                        <button id="downloadTableBtn" class="btn p-0" type="button">
-                            <i class="mdi mdi-download mdi-24px"></i></button>
-                    </div>
-                </div>
+                <h6>New Order Details</h6>
                 <br>
                 <div class="row gy-4">
                     <div class="dt-buttons"></div>
@@ -32,61 +27,91 @@
                         <thead>
                             <tr>
                                 <th scope="col">#Order Id: </th>
-                                <th scope="col" colspan="3"><span id="order_id">{{ $order->id }}</span></th>
+                                <th scope="col" colspan="3"><span id="order_id">{{ $payment->order_id }}</span></th>
                             </tr>
                             <tr>
                                 <th scope="col">#Transaction Id: </th>
-                                <th scope="col"><span id="transaction_id">N/A</span></th>
+                                <th scope="col"><span id="transaction_id">#{{ $payment->id }}</span></th>
                                 <th scope="col">Payment Method: </th>
-                                <th scope="col"><span id="payment_method">N/A</span></th>
+                                <th scope="col"><span id="payment_method">
+                                        @if ($payment->payment_method == 1)
+                                            Online Transfer
+                                        @else
+                                            QR Scan
+                                        @endif
+                                    </span></th>
                             </tr>
                             <tr>
                                 <th scope="col">Customer Name: </th>
-                                <th scope="col" colspan="3"><span
-                                        id="customer_address">{{ $order->customer->user_details->fname . ' ' . $order->customer->user_details->lname }}</span>
+                                <th scope="col"><span id="customer_name">{{ $payment->customer_name }}</span>
+                                </th>
+                                <th scope="col">Customer Contact: </th>
+                                <th scope="col"><span id="customer_address">{{ $payment->customer_contact }}</span>
                                 </th>
                             </tr>
+
                             <tr>
                                 <th scope="col">Customer Address: </th>
-                                <th scope="col" colspan="3"><span
-                                        id="customer_address">{{ $order->customer->user_details->address_1 . ' ' . $order->customer->user_details->address_2 }}</span>
+                                <th scope="col"><span id="customer_address">{{ $payment->customer_address }}</span>
                                 </th>
+                                <th scope="col">Delivery Method: </th>
+                                <th scope="col"><span id="payment_method">
+                                        @if ($payment->delivery_method == 1)
+                                            Pickup
+                                        @else
+                                            Delivery
+                                        @endif
+                                    </span></th>
                             </tr>
                             <tr>
                                 <th scope="col">Order timestamp: </th>
-                                <th scope="col"><span id="order_timestamp">{{ $order->updated_at }}</span></th>
+                                <th scope="col" colspan="3"><span
+                                        id="order_timestamp">{{ $payment->order->updated_at }}</span></th>
+
+                            </tr>
+                            <tr>
+                                <th scope="col">Order timestamp: </th>
+                                <th scope="col"><span id="order_timestamp">{{ $payment->order->updated_at }}</span></th>
                                 <th scope="col">Preparing timestamp: </th>
-                                <th scope="col"><span id="preparing_timestamp">{{ $order->preparing_at }}</span></th>
+                                <th scope="col"><span id="preparing_timestamp">{{ $payment->order->preparing_at }}</span></th>
                             </tr>
                             <tr>
                                 <th scope="col">Delivering timestamp: </th>
-                                <th scope="col"><span id="delivering_timestamp">{{ $order->delivering_at }}</span></th>
+                                <th scope="col"><span id="delivering_timestamp">{{ $payment->order->delivering_at }}</span></th>
                                 <th scope="col">Completed timestamp: </th>
-                                <th scope="col"><span id="completed_timestamp">{{ $order->completed_at }}</span></th>
+                                <th scope="col"><span id="completed_timestamp">{{ $payment->order->completed_at }}</span></th>
+                            </tr>
+                            
+                            <tr>
+                                <th scope="col">Payment Receipt : </th>
+                                <th scope="col" colspan="3"><a target="_blank"
+                                        href="{{ url('/storage/payment/' . $payment->payment_receipt) }}">{{ $payment->payment_receipt }}</a>
+                                </th>
+
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
+                                <td colspan="4"> Item </td>
+                            </tr>
+                            @foreach ($payment->order->details as $item)
+                            <tr>
+                                <td>{{ $loop->iteration }} </td>
+                                <td colspan="2">{{ $item->product->product_name }} ({{ $item->weight->description }}) x {{ $item->product_qty }} </td>
+                                <td>RM {{ $item->sub_total }}</td>
+                            </tr>
+                            @endforeach
+                            <tr>
                                 <td colspan="4"> </td>
                             </tr>
                             <tr>
-                                <td colspan="2"> Item</td>
+                                <td colspan="2"></td>
                                 <td> Total Amount</td>
-                                <td> <span id="total_amount">{{ $order->total_amount }}</span></td>
+                                <td> <span id="total_amount">RM {{ $payment->payment_amount }}</span></td>
                             </tr>
-                            @foreach ($order->details as $item)
-                                <tr>
-
-                                    <td>{{ $loop->iteration }} </td>
-                                    <td>{{ $item->product->product_name }}</td>
-                                    <td>{{ $item->product_qty }} </td>
-                                    <td>{{ $item->sub_total }}</td>
-                                </tr>
-                            @endforeach
                         </tbody>
                     </table>
                 </div>
-
                 <div class="modal-footer pt-2">
                     @if ($page == 'o')
                         <a href="{{ route('dashboard-order') }}"><button type="button"
