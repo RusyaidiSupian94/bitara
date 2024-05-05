@@ -158,8 +158,9 @@
                                         <div class="card-body">
                                             <h5 class="card-title">Product : {{ $cartorder->product->product_name }}
                                             </h5>
-                                            <p class="card-text">Quantity : {{ $cartorder->product_qty }}</p>
-                                            <p class="card-text">Total : {{ $cartorder->sub_total }}</p>
+                                            <p class="card-text">Quantity : {{ $cartorder->product_qty }} x {{$cartorder->weight->description}}</p>
+                                            <p class="card-text">Unit Price : RM {{ $cartorder->product->unit_price }}</p>
+                                            <p class="card-text">Sub Total : RM {{ $cartorder->sub_total }}</p>
                                             <button onclick="removeToCart({{ $cartorder->id }});"
                                                 class="btn btn-danger">Remove</button>
                                         </div>

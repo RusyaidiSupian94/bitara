@@ -32,8 +32,11 @@ class Customer extends Controller
     public function cart_datatable(Request $request) // add to cart
     {
         $product = Product::find($request->id);
-        $amount = $product->unit_price * $request->qty;
         $uomid = UOM::where('description', $request->uomdescription)->pluck('id')->first();
+        //calculation qty for amount
+        $uomqty = UOM::where('id', $uomid)->pluck('qty')->first();
+        $amount = $product->unit_price * ($request->qty / $uomqty);
+
         $add = Cart::create([
             'customer_id' => Auth::user()->id,
             'product_id' => $request->id,
