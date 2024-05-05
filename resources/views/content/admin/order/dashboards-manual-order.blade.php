@@ -34,11 +34,10 @@
                                 <thead class="table-light">
                                     <tr>
                                         <th>No</th>
-                                        <th>Customer Name</th>
+                                        <th>Staff Name</th>
                                         <th>Order Date</th>
                                         <th>Order Details</th>
                                         <th>Total</th>
-                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -46,7 +45,7 @@
                                     @foreach ($orders as $order)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $order->customer->user_details->fname }}</td>
+                                            <td>{{ $order->created_by ?? '' }}</td>
                                             <td>{{ date('d-m-Y h:i a', strtotime($order->date)) }}</td>
                                             <td class="text-center">
                                                 <a onclick="displayOrderDetails({{ $order->id }});"
@@ -56,16 +55,15 @@
                                                 </a>
                                             </td>
                                             <td class="text-center">{{ $order->total_amount }}</td>
-                                            <td class="text-center">{{ $order->total_amount }}</td>
                                             <td>
-                                                <div class="dropdown">
-                                                    {{-- <a href="{{ route('edit-order', ['id' => $order->id]) }}"
+                                                <div>
+                                                    <a href="{{ route('edit-order', ['id' => $order->id]) }}"
                                                         class="btn btn-sm btn-text-secondary rounded-pill btn-icon item-edit"><i
                                                             class="mdi mdi-pencil-outline"></i></a>
                                                     <a onclick="deleteOrder({{ $order->id }});"
                                                         class="btn
                                                         btn-sm btn-text-danger rounded-pill btn-icon item-delete"><i
-                                                            class="mdi mdi-trash-can-outline text-danger"></i></a> --}}
+                                                            class="mdi mdi-trash-can-outline text-danger"></i></a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -81,7 +79,7 @@
 
 
     <!--Order Modal -->
-    <div class="modal fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal modal-lg fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -99,6 +97,7 @@
                                             <th>No</th>
                                             <th>Product Name</th>
                                             <th>Quantity</th>
+                                            <th>Weight</th>
                                             <th>Sub Total</th>
                                         </tr>
                                     </thead>
@@ -111,91 +110,6 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--Payment Modal -->
-    <div class="modal fade" id="paymentDetailModal" tabindex="-1" aria-labelledby="paymentDetailModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="paymentDetailModalLabel">Payment Details
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--Completed Modal -->
-    <div class="modal modal-lg fade" id="completedOrderDetailsModal" tabindex="-1"
-        aria-labelledby="completedOrderDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="completedOrderDetailsModalLabel">Order Details
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">#Order Id: </th>
-                                <th scope="col" colspan="3"><span id="order_id"></span></th>
-                            </tr>
-                            <tr>
-                                <th scope="col">#Transaction Id: </th>
-                                <th scope="col"><span id="transaction_id"></span></th>
-                                <th scope="col">Payment Method: </th>
-                                <th scope="col"><span id="payment_method"></span></th>
-                            </tr>
-                            <tr>
-                                <th scope="col">Customer Name: </th>
-                                <th scope="col" colspan="3"><span id="customer_name"></span></th>
-                            </tr>
-                            <tr>
-                                <th scope="col">Customer Address: </th>
-                                <th scope="col" colspan="3"><span id="customer_address"></span></th>
-                            </tr>
-                            <tr>
-                                <th scope="col">Order timestamp: </th>
-                                <th scope="col"><span id="order_timestamp"></span></th>
-                                <th scope="col">Preparing timestamp: </th>
-                                <th scope="col"><span id="preparing_timestamp"></span></th>
-                            </tr>
-                            <tr>
-                                <th scope="col">Delivering timestamp: </th>
-                                <th scope="col"><span id="delivering_timestamp"></span></th>
-                                <th scope="col">Completed timestamp: </th>
-                                <th scope="col"><span id="completed_timestamp"></span></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="4"> </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2"> Item</td>
-                                <td> Total Amount</td>
-                                <td> <span id="total_amount"></span></td>
-                            </tr>
-                            <tr id="item"></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
                 </div>
             </div>
         </div>
@@ -284,6 +198,9 @@
                     },
                     {
                         data: 'quantity'
+                    },
+                    {
+                        data: 'weight'
                     },
                     {
                         data: 'sub_total'

@@ -43,31 +43,44 @@ class Orders extends Controller
 
         return view('content.admin.order.add-manual-order', compact('category', 'uoms'));
     }
+
+    public function order_edit($id)
+    {
+        $category = Category::get();
+        $uoms = UOM::get();
+        $order = Order::with('details.product','details.weight')->find($id);
+
+        return view('content.admin.order.edit-manual-order', compact('category', 'uoms','order'));
+    }
     public function order_store(Request $request)
     {
-        dd($request->all());
+        // dd($request->all(), Auth::user()->username);
 
-        $product = Product::find($request->id);
-        $amount = $product->unit_price * $request->qty;
+        // $product = Product::find($request->id);
+        // $amount = $product->unit_price * $request->qty;
 
         $add_order = Order::create([
             'customer_id' => Auth::user()->id,
             'order_status' => 'C',
-            'order_status' => 'M',
+            'order_type' => 'M',
             'date' => now(),
             // 'total_amount' => $amount,
             'fullfillment_status' => 'F',
             'created_at' => now(),
+            'created_by' => Auth::user()->username,
         ]);
 
         foreach ($request->product_list as $key => $list) {
             $product = Product::find($list['id']);
-            if ($list['qty'] == 1) {
+            // dd($product)
+            if ($list['weight'] == 1) {
                 $subtotal = $product->unit_price * $list['qty'];
-            } else if ($list['qty'] == 2) {
+            } else if ($list['weight'] == 2) {
                 $subtotal = $product->unit_price / 4 * $list['qty'];
-            } else if ($list['qty'] == 2) {
+            } else if ($list['weight'] == 3) {
                 $subtotal = $product->unit_price / 2 * $list['qty'];
+            } else {
+                $subtotal = 0;
             }
             $add_cart_detail = OrderDetail::create([
                 'order_id' => $add_order->id,
@@ -78,10 +91,14 @@ class Orders extends Controller
             ]);
         }
 
-        $orderDetails = OrderDetail::where('order_id', $add_order->id)->sum('total');
+        $orderDetails = OrderDetail::where('order_id', $add_order->id)->sum('sub_total');
+        // dd($orderDetails);
         $update_order = Order::where('id', $add_order->id)->update([
-            'total_amount' => $orderDetails->total,
+            'total_amount' => $orderDetails,
         ]);
+
+        return redirect()->route('dashboard-manual-order');
+
     }
 
     public function order_process($id)
@@ -199,6 +216,10 @@ class Orders extends Controller
             })
             ->addColumn('quantity', function ($row) {
                 return $row->product_qty;
+            })
+            ->addColumn('weight', function ($row) {
+                $oum = UOM::find($row->product_uom);
+                return $oum->description;
             })
             ->addColumn('sub_total', function ($row) {
                 return $row->sub_total;

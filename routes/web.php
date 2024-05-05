@@ -75,6 +75,7 @@ Route::get('/order-add', [Orders::class, 'order_add'])->name('add-order');
 Route::get('/order-edit/{id}', [Orders::class, 'order_edit'])->name('edit-order');
 Route::post('/order-store', [Orders::class, 'order_store'])->name('store-order');
 Route::get('/manual-order-dashboard', [Orders::class, 'manual_order_dashboard'])->name('dashboard-manual-order');
+Route::post('/order-edited-store/{id}', [Orders::class, 'order_edited_store'])->name('store-edited-order');
 
 Route::get('/customer-dashboard', [Customer::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');

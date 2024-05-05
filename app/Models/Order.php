@@ -23,6 +23,7 @@ class Order extends Model
         'total_amount',
         'fullfillment_status',
         'created_at',
+        'created_by',
         'updated_at',
         'preparing_at',
         'preparing_by',
