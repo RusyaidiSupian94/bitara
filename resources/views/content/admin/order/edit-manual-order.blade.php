@@ -1,6 +1,6 @@
 @extends('layouts/contentNavbarLayout')
 
-@section('title', ' Add - Forms')
+@section('title', ' Edit - Forms')
 
 @section('content')
     <h4 class="py-3 mb-4"><span class="text-muted fw-light">Orders/</span> Edit Manual Order</h4>
@@ -58,31 +58,33 @@
                                 <tbody>
                                     @foreach ($order->details as $key => $product)
                                         <tr>
-                                            <td><input name="product_list[{{ $key }}][{{ $product->id }}]"
-                                                    type="text" value="{{ $product->id }}"
-                                                    class="form-control total-input" hidden />{{ $key + 1 }}</td>
+                                            <input type="hidden" name="product_list[{{ $key + 1 }}][order_detail_id]"
+                                                value="{{ $product->id }}">
+
+                                            <td><input name="product_list[{{ $key + 1 }}][id]" type="text"
+                                                    value="{{ $product->product_id }}" class="form-control total-input"
+                                                    hidden />{{ $key + 1 }}</td>
                                             <td>{{ $product->product->product_name }} </td>
 
                                             <td> <select class="form-select"
-                                                    name="product_list[{{ $key }}][weight]" autofocus>
+                                                    name="product_list[{{ $key + 1 }}][weight]" autofocus>
                                                     @foreach ($uoms as $uom)
-                                                        <option
-                                                            value="{{ $uom->id }} {{ $uom->id == $product->product_uom ? 'selected' : '' }}">
+                                                        <option value="{{ $uom->id }}"
+                                                            {{ $uom->id == $product->product_uom ? 'selected' : '' }}>
                                                             {{ $uom->description }}
                                                         </option>
                                                     @endforeach
                                                 </select> </td>
-                                            <td><input name="product_list[{{ $key }}][qty]" type="number"
+                                            <td><input name="product_list[{{ $key + 1 }}][qty]" type="number"
                                                     class="form-control total-input" value="{{ $product->product_qty }}" />
                                             </td>
-                                            <td><button type="button"
-                                                    class="btn btn-danger btn-sm remove-row">Remove</button></td>
+                                            <td><button type="button" class="btn btn-danger btn-sm "
+                                                    onclick="remove_item({{ $product->id }},this)">Remove</button></td>
                                         </tr>
+                                        <input type="hidden" name="last_value" id="last_value"
+                                            value="{{ $key + 1 }}">
                                     @endforeach
-                                    @php
-                                        $lastKey = key($order->details );
-                                    @endphp
-                                    <input type="hidden" name="last_value" id="last_value" value="{{ $lastKey }}">
+
                                 </tbody>
                             </table>
                         </div>
@@ -145,7 +147,7 @@
                 // Append row to the table
                 $('#productTable tbody').append('<tr>' +
                     '<td><input name="product_list[' + i + '][id] type="text" value="' + productId +
-                    '" class="form-control total-input" hidden />' + productId + '</td>' +
+                    '" class="form-control total-input" hidden />' + i + '</td>' +
                     '<td>' + productName + '</td>' +
                     '<td>' + weightDropdown + '</td>' +
                     '<td><input name="product_list[' + i +
@@ -182,6 +184,25 @@
                     Swal.fire(error, '', 'error');
                 }
             });
+        }
+
+        function remove_item(id, e) {
+            $.ajax({
+                type: "POST",
+                url: "{{ route('remove-edited-order-item') }}",
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    item_id: id
+                },
+                success: function(response) {
+                    $(e).closest('tr').remove();
+
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire(error, '', 'error');
+                }
+            });
+
         }
     </script>
 @endsection

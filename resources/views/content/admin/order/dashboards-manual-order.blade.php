@@ -79,7 +79,8 @@
 
 
     <!--Order Modal -->
-    <div class="modal modal-lg fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel" aria-hidden="true">
+    <div class="modal modal-lg fade" id="orderDetailModal" tabindex="-1" aria-labelledby="orderDetailModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -209,6 +210,36 @@
             });
 
             $("#orderDetailModal").modal("show");
+        }
+
+        function deleteOrder(id) {
+            Swal.fire({
+                title: 'Confirm to delete the selected orders?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('delete-order') }}",
+                        data: {
+                            '_token': '{{ csrf_token() }}',
+                            order_id: id
+                        },
+                        success: function(response) {
+
+                            location.reload();
+
+                        },
+                        error: function(xhr, status, error) {
+                            Swal.fire(error, '', 'error');
+                        }
+                    });
+                }
+            });
         }
     </script>
 @endsection

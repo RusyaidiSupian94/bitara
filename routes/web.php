@@ -4,48 +4,15 @@ use App\Http\Controllers\authentications\ForgotPasswordBasic;
 use App\Http\Controllers\authentications\LoginBasic;
 use App\Http\Controllers\authentications\Profile;
 use App\Http\Controllers\authentications\RegisterBasic;
-use App\Http\Controllers\settings\Staff;
-use App\Http\Controllers\cards\CardBasic;
 use App\Http\Controllers\dashboard\Analytics;
 use App\Http\Controllers\dashboard\Customer;
 use App\Http\Controllers\dashboard\Orders;
-use App\Http\Controllers\extended_ui\PerfectScrollbar;
-use App\Http\Controllers\extended_ui\TextDivider;
-use App\Http\Controllers\form_elements\BasicInput;
-use App\Http\Controllers\form_elements\InputGroups;
-use App\Http\Controllers\form_layouts\HorizontalForm;
-use App\Http\Controllers\form_layouts\VerticalForm;
-use App\Http\Controllers\icons\MdiIcons;
 use App\Http\Controllers\layouts\Blank;
 use App\Http\Controllers\layouts\Container;
 use App\Http\Controllers\layouts\Fluid;
 use App\Http\Controllers\layouts\WithoutMenu;
 use App\Http\Controllers\layouts\WithoutNavbar;
-use App\Http\Controllers\pages\AccountSettingsAccount;
-use App\Http\Controllers\pages\AccountSettingsConnections;
-use App\Http\Controllers\pages\AccountSettingsNotifications;
-use App\Http\Controllers\pages\MiscError;
-use App\Http\Controllers\pages\MiscUnderMaintenance;
-use App\Http\Controllers\tables\Basic as TablesBasic;
-use App\Http\Controllers\user_interface\Accordion;
-use App\Http\Controllers\user_interface\Alerts;
-use App\Http\Controllers\user_interface\Badges;
-use App\Http\Controllers\user_interface\Buttons;
-use App\Http\Controllers\user_interface\Carousel;
-use App\Http\Controllers\user_interface\Collapse;
-use App\Http\Controllers\user_interface\Dropdowns;
-use App\Http\Controllers\user_interface\Footer;
-use App\Http\Controllers\user_interface\ListGroups;
-use App\Http\Controllers\user_interface\Modals;
-use App\Http\Controllers\user_interface\Navbar;
-use App\Http\Controllers\user_interface\Offcanvas;
-use App\Http\Controllers\user_interface\PaginationBreadcrumbs;
-use App\Http\Controllers\user_interface\Progress;
-use App\Http\Controllers\user_interface\Spinners;
-use App\Http\Controllers\user_interface\TabsPills;
-use App\Http\Controllers\user_interface\Toasts;
-use App\Http\Controllers\user_interface\TooltipsPopovers;
-use App\Http\Controllers\user_interface\Typography;
+use App\Http\Controllers\settings\Staff;
 use Illuminate\Support\Facades\Route;
 
 // Main Page Route
@@ -76,6 +43,9 @@ Route::get('/order-edit/{id}', [Orders::class, 'order_edit'])->name('edit-order'
 Route::post('/order-store', [Orders::class, 'order_store'])->name('store-order');
 Route::get('/manual-order-dashboard', [Orders::class, 'manual_order_dashboard'])->name('dashboard-manual-order');
 Route::post('/order-edited-store/{id}', [Orders::class, 'order_edited_store'])->name('store-edited-order');
+Route::post('/remove-edited-order-item', [Orders::class, 'remove_edited_order_item'])->name('remove-edited-order-item');
+Route::post('/order-delete', [Orders::class, 'order_delete'])->name('delete-order');
+
 
 Route::get('/customer-dashboard', [Customer::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
@@ -93,7 +63,6 @@ Route::get('/layouts/fluid', [Fluid::class, 'index'])->name('layouts-fluid');
 Route::get('/layouts/container', [Container::class, 'index'])->name('layouts-container');
 Route::get('/layouts/blank', [Blank::class, 'index'])->name('layouts-blank');
 
-
 Route::get('/auth/login-basic', [LoginBasic::class, 'index'])->name('auth-login-basic');
 Route::get('/auth/register-basic', [RegisterBasic::class, 'index'])->name('auth-register-basic');
 Route::get('/auth/forgot-password-basic', [ForgotPasswordBasic::class, 'index'])->name('auth-reset-password-basic');
@@ -101,10 +70,8 @@ Route::post('/auth/check-login', [LoginBasic::class, 'authenticate'])->name('aut
 Route::post('/auth/register-customer', [RegisterBasic::class, 'registerCustomer'])->name('auth-register-customer');
 Route::get('/logout', [LoginBasic::class, 'logout'])->name('logout');
 
-
 Route::get('/update-profile/{id}', [Profile::class, 'index'])->name('update-profile');
 Route::post('/save-updated-profile', [Profile::class, 'save'])->name('save-updated-profile');
-
 
 Route::get('/setting/dashboard-staff', [Staff::class, 'index'])->name('dashboard-staff');
 Route::get('/setting/add-staff', [Staff::class, 'add_staff'])->name('add-staff');

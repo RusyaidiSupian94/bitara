@@ -48,9 +48,9 @@ class Orders extends Controller
     {
         $category = Category::get();
         $uoms = UOM::get();
-        $order = Order::with('details.product','details.weight')->find($id);
+        $order = Order::with('details.product', 'details.weight')->find($id);
 
-        return view('content.admin.order.edit-manual-order', compact('category', 'uoms','order'));
+        return view('content.admin.order.edit-manual-order', compact('category', 'uoms', 'order'));
     }
     public function order_store(Request $request)
     {
@@ -94,6 +94,63 @@ class Orders extends Controller
         $orderDetails = OrderDetail::where('order_id', $add_order->id)->sum('sub_total');
         // dd($orderDetails);
         $update_order = Order::where('id', $add_order->id)->update([
+            'total_amount' => $orderDetails,
+        ]);
+
+        return redirect()->route('dashboard-manual-order');
+
+    }
+    public function order_edited_store(Request $request, $id)
+    {
+        // dd($request->all(), Auth::user()->username);
+
+        $edit_order = Order::where('id', $id)->update([
+            'customer_id' => Auth::user()->id,
+            'order_status' => 'C',
+            'order_type' => 'M',
+            'date' => now(),
+            // 'total_amount' => $amount,
+            'fullfillment_status' => 'F',
+            'created_at' => now(),
+            'created_by' => Auth::user()->username,
+        ]);
+
+        foreach ($request->product_list as $key => $list) {
+
+            $product = Product::find($list['id']);
+            if ($list['weight'] == 1) {
+                $subtotal = $product->unit_price * $list['qty'];
+            } else if ($list['weight'] == 2) {
+                $subtotal = $product->unit_price / 4 * $list['qty'];
+            } else if ($list['weight'] == 3) {
+                $subtotal = $product->unit_price / 2 * $list['qty'];
+            } else {
+                $subtotal = 0;
+            }
+            if (isset($list['order_detail_id'])) {
+
+                $add_detail = OrderDetail::where('id', $list['order_detail_id'])->update([
+                    'order_id' => $id,
+                    'product_id' => $list['id'],
+                    'product_qty' => $list['qty'],
+                    'product_uom' => $list['weight'],
+                    'sub_total' => $subtotal,
+                ]);
+            } else {
+
+                $add_detail = OrderDetail::create([
+                    'order_id' => $id,
+                    'product_id' => $list['id'],
+                    'product_qty' => $list['qty'],
+                    'product_uom' => $list['weight'],
+                    'sub_total' => $subtotal,
+                ]);
+            }
+        }
+
+        $orderDetails = OrderDetail::where('order_id', $id)->sum('sub_total');
+        // dd($orderDetails);
+        $update_order = Order::where('id', $id)->update([
             'total_amount' => $orderDetails,
         ]);
 
@@ -226,6 +283,32 @@ class Orders extends Controller
             })
             ->make(true);
 
+    }
+
+    public function remove_edited_order_item(Request $request)
+    {
+        $id = $request->item_id;
+        $order = OrderDetail::find($id)->delete();
+        if ($order) {
+            return response()->json(['success' => 'Item removed!']);
+
+        } else {
+            return response()->json(['error' => 'Failed to removed!']);
+
+        }
+
+    }
+
+      public function order_delete(Request $request)
+    {
+        $order_details = OrderDetail::where('order_id',$request->order_id)->get();
+        foreach($order_details as $order){
+            $order->delete();
+        }
+        $order = Order::find($request->order_id)->delete();
+        if ($order) {
+            return true;
+        }
     }
 
 }
