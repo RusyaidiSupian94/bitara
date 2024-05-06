@@ -22,7 +22,7 @@ class Customer extends Controller
     {
         $user = Auth::user();
         $category = Category::get();
-        $products = Product::with('weight')->get();
+        $products = Product::with('weight')->orderBy('category_id')->get();
         $order_paid = Order::with('payment', 'details.product', 'details.weight')->where('customer_id', $user->id)->get();
 
         $cart = Cart::with('product', 'weight')->where('customer_id', $user->id)->get();
