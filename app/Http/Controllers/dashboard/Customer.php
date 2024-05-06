@@ -31,19 +31,34 @@ class Customer extends Controller
     }
     public function cart_datatable(Request $request) // add to cart
     {
+        //check cart
+
         $product = Product::find($request->id);
         $uomid = UOM::where('description', $request->uomdescription)->pluck('id')->first();
-        //calculation qty for amount
-        $uomqty = UOM::where('id', $uomid)->pluck('qty')->first();
-        $amount = $product->unit_price * ($request->qty / $uomqty);
+        $item = Cart::where('customer_id', Auth::user()->id)->where('product_id', $request->id)->where('product_uom', $uomid)->first();
 
-        $add = Cart::create([
-            'customer_id' => Auth::user()->id,
-            'product_id' => $request->id,
-            'product_qty' => $request->qty,
-            'product_uom' => $uomid,
-            'sub_total' => $amount,
-        ]);
+        $uomqty = UOM::where('id', $uomid)->pluck('qty')->first();
+
+        if ($item) {
+            $qty = $request->qty + $item->product_qty;
+            // dd($request->all(), $item, $qty);
+            $amount = $product->unit_price * ($qty / $uomqty);
+            $edit = Cart::where('id', $item->id)->update([
+                'product_qty' =>  $qty,
+                'sub_total' => $amount,
+            ]);
+        } else {
+            $amount = $product->unit_price * ($request->qty / $uomqty);
+
+            $add = Cart::create([
+                'customer_id' => Auth::user()->id,
+                'product_id' => $request->id,
+                'product_qty' => $request->qty,
+                'product_uom' => $uomid,
+                'sub_total' => $amount,
+            ]);
+        }
+
         return response()->json(['success' => 'Added to cart']);
     }
 
