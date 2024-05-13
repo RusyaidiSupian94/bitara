@@ -50,6 +50,7 @@ Route::post('/order-delete', [Orders::class, 'order_delete'])->name('delete-orde
 Route::get('/customer-dashboard', [Customer::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
 Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
+Route::post('/cart-qty', [Customer::class, 'cart_qty'])->name('cart-qty');
 // Route::get('/checkout', [Customer::class, 'checkout'])->name('checkout');
 
 //payment
@@ -68,6 +69,7 @@ Route::get('/auth/register-basic', [RegisterBasic::class, 'index'])->name('auth-
 Route::get('/auth/forgot-password-basic', [ForgotPasswordBasic::class, 'index'])->name('auth-reset-password-basic');
 Route::post('/auth/check-login', [LoginBasic::class, 'authenticate'])->name('auth-check-login');
 Route::post('/auth/register-customer', [RegisterBasic::class, 'registerCustomer'])->name('auth-register-customer');
+Route::get('/get_poscode_details', [RegisterBasic::class, 'get_poscode_details'])->name('get-poscode-details');
 Route::get('/logout', [LoginBasic::class, 'logout'])->name('logout');
 
 Route::get('/update-profile/{id}', [Profile::class, 'index'])->name('update-profile');

@@ -158,9 +158,24 @@
                                         <div class="card-body">
                                             <h5 class="card-title">Product : {{ $cartorder->product->product_name }}
                                             </h5>
-                                            <p class="card-text">Quantity : {{ $cartorder->product_qty }} x {{$cartorder->weight->description}}</p>
+                                            <p class="card-text">
+                                                <div class="col-12">
+                                                    <div class="input-group input-group-sm mb-3">
+                                                        <button class="btn btn-outline-secondary button-minuscart" type="button"
+                                                            data-id="{{ $cartorder->id }}"><i
+                                                                class="mdi mdi-minus mdi-2px"></i></button>
+                                                        <input id="cartqty{{ $cartorder->id }}" type="number" class="form-control"
+                                                            value="{{ $cartorder->product_qty }}">
+                                                        <button class="btn btn-outline-secondary button-pluscart" type="button"
+                                                            data-id="{{ $cartorder->id }}"><i
+                                                                class="mdi mdi-plus mdi-2px"></i></button>
+                                                    </div>
+                                                </div>
+                                            </p>
+                                            
+                                            <p class="card-text">Quantity : <span id="finalqty{{ $cartorder->id }}">{{ $cartorder->product_qty }}</span> x {{$cartorder->weight->description}}</p>
                                             <p class="card-text">Unit Price : RM {{ $cartorder->product->unit_price / $cartorder->weight->qty }}</p>
-                                            <p class="card-text">Sub Total : RM {{ $cartorder->sub_total }}</p>
+                                            <p class="card-text">Sub Total : RM <span id="subtotal{{ $cartorder->id }}">{{ $cartorder->sub_total }}</span> </p>
                                             <button onclick="removeToCart({{ $cartorder->id }});"
                                                 class="btn btn-danger">Remove</button>
                                         </div>
@@ -284,7 +299,6 @@
             $('.button-minus').click(function() {
                 var productId = $(this).data('id');
                 var input = $('#qty' + productId);
-                console.log(input);
                 var qty = parseInt($(input).val());
                 if (qty > 0) {
                     $(input).val(qty - 1);
@@ -294,13 +308,58 @@
             // Event handler for plus button
             $('.button-plus').click(function() {
                 var productId = $(this).data('id');
-                var input = $('#qty' + productId);
-                console.log(input);
+                var input = $('#qty' + productId);  
                 var qty = parseInt($(input).val());
                 $(input).val(qty + 1);
             });
+            
 
+            $('.button-minuscart').click(function() {
+                var cartId = $(this).data('id');
+                var qty = $('#cartqty' + cartId).val();
+                var final_qty = parseInt(qty) - 1;
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('cart-qty') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: cartId,
+                        qty: final_qty
+                    },
+                    success: function(response) {
+                        var update = $('#cartqty' + cartId).val(final_qty);
+                        var update = $('#finalqty' + cartId).text(response.data.product_qty);
+                        var update = $('#subtotal' + cartId).text(response.data.sub_total);
+                        // location.reload();
+                    }
 
+                });
+                
+            });
+
+            // Event handler for plus button
+            $('.button-pluscart').click(function() {
+                var cartId = $(this).data('id');
+                var qty = $('#cartqty' + cartId).val();
+                var final_qty = parseInt(qty) + 1;
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('cart-qty') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: cartId,
+                        qty: final_qty
+                    },
+                    success: function(response) {
+                        var update = $('#cartqty' + cartId).val(final_qty);
+                        var update = $('#finalqty' + cartId).text(response.data.product_qty);
+                        var update = $('#subtotal' + cartId).text(response.data.sub_total);
+                        // location.reload();
+                    }
+
+                });
+            });
+            
 
             $('.filter-button').click(function() {
                 var value = $(this).data('value'); // Get the value associated with the clicked button
@@ -381,5 +440,24 @@
 
             });
         }
+//         function updateCartQuantity(cartId, quantity) {
+//     // AJAX call to send data to server-side script
+//     $.ajax({
+//         url: 'update_cart_quantity.php', // Replace with your server-side script URL
+//         method: 'POST',
+//         data: {
+//             cart_id: cartId,
+//             quantity: quantity
+//         },
+//         success: function(response) {
+//             // Handle successful response from server
+//             console.log('Cart quantity updated successfully');
+//         },
+//         error: function(xhr, status, error) {
+//             // Handle error
+//             console.error('Error updating cart quantity:', error);
+//         }
+//     });
+// }
     </script>
 @endsection

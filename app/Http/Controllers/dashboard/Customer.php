@@ -69,6 +69,26 @@ class Customer extends Controller
         return response()->json(['success' => 'Successfully remove from cart']);
     }
 
+    public function cart_qty(Request $request)
+    {
+        $item = Cart::find($request->id);
+        $product = Product::find($item->product_id);
+        $uomqty = UOM::where('id', $item->product_uom)->pluck('qty')->first();
+
+        // $qty = $request->qty + $item->product_qty;
+        $amount = $product->unit_price * ($request->qty / $uomqty);
+        $edit = Cart::where('id', $item->id)->update([
+            'product_qty' =>  $request->qty,
+            'sub_total' => $amount,
+        ]);
+
+        if ($edit) {
+            $item = Cart::find($request->id);
+        }
+
+        return response()->json(['success' => 'Successfully remove from cart', 'data' => $item]);
+    }
+
     public function checkout($id)
     {
         return redirect()->route('add-payment', ['id' => $id]);
