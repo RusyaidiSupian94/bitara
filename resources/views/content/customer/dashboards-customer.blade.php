@@ -188,7 +188,7 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">
-                                            Total Amount : RM {{ number_format($cart->sum('sub_total') ?? 0, 2) }}</h5>
+                                            Total Amount : RM <span id="finalSubtotal">{{ number_format($cart->sum('sub_total') ?? 0, 2) }}</span></h5>
                                         <a href="{{ route('add-payment') }}" class="btn btn-success">Checkout</a>
                                     </div>
                                 </div>
@@ -330,6 +330,7 @@
                         var update = $('#cartqty' + cartId).val(final_qty);
                         var update = $('#finalqty' + cartId).text(response.data.product_qty);
                         var update = $('#subtotal' + cartId).text(response.data.sub_total);
+                        var update = $('#finalSubtotal').text(response.total_amount);
                         // location.reload();
                     }
 
@@ -354,6 +355,7 @@
                         var update = $('#cartqty' + cartId).val(final_qty);
                         var update = $('#finalqty' + cartId).text(response.data.product_qty);
                         var update = $('#subtotal' + cartId).text(response.data.sub_total);
+                        var update = $('#finalSubtotal').text(response.total_amount);
                         // location.reload();
                     }
 

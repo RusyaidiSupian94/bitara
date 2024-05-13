@@ -84,9 +84,10 @@ class Customer extends Controller
 
         if ($edit) {
             $item = Cart::find($request->id);
+            $total_amount = Cart::where('customer_id', $item->customer_id)->sum('sub_total');
         }
 
-        return response()->json(['success' => 'Successfully remove from cart', 'data' => $item]);
+        return response()->json(['success' => 'Successfully remove from cart', 'data' => $item, 'total_amount' => $total_amount]);
     }
 
     public function checkout($id)
