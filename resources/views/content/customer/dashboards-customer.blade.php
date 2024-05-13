@@ -9,6 +9,16 @@
 
 @section('vendor-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}">
+    <style>
+        .carousel-item img {
+            height: 300px;
+            /* Set the height of the images */
+            width: 100%;
+            /* Ensure images fill the width of their container */
+            object-fit: cover;
+            /* Maintain aspect ratio and cover the container */
+        }
+    </style>
 @endsection
 
 @section('vendor-script')
@@ -18,8 +28,37 @@
 @section('content')
     <input type="hidden" name="user_id" id="user_id" value="{{ $user->id }}">
     <div>
-        <img src="{{ asset('assets/img/backgrounds/banner.jpg') }}" width="100%" height="15%" style="object-fit: cover"
-            alt="Banner Image">
+        <div id="carouselHomepage" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselHomepage" data-bs-interval="10000" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselHomepage" data-bs-interval="10000" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselHomepage" data-bs-interval="10000" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{ asset('assets/img/backgrounds/a.jpg') }}" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('assets/img/backgrounds/b.jpg') }}" class="d-block w-100" alt="...">
+                </div>
+                <div class="carousel-item">
+                    <img src="{{ asset('assets/img/backgrounds/c.jpg') }}" class="d-block w-100" alt="...">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselHomepage"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselHomepage"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
     </div>
 
     <!-- Add banner image here -->
@@ -101,9 +140,17 @@
                                     <div class="card-footer">
                                         <div class="row pt-3">
                                             <div class="col-12 col-md-8 d-flex justify-end">
-                                                <div class="input-radio"><input type="radio" id="250g{{ $product->id }}" name="size" value="250g" checked> <label for="250g{{ $product->id }}">250g</label></div>
-                                                <div class="input-radio"><input type="radio" id="500g{{ $product->id }}" name="size" value="500g"> <label for="500g{{ $product->id }}">500g</label></div>
-                                                <div class="input-radio"><input type="radio" id="1kg{{ $product->id }}" name="size"  value="1kg"> <label for="1kg{{ $product->id }}">1kg</label></div>
+                                                <div class="input-radio"><input type="radio"
+                                                        id="250g{{ $product->id }}" name="size" value="250g"
+                                                        checked> <label for="250g{{ $product->id }}">250g</label></div>
+                                                <div class="input-radio"><input type="radio"
+                                                        id="500g{{ $product->id }}" name="size" value="500g">
+                                                    <label for="500g{{ $product->id }}">500g</label>
+                                                </div>
+                                                <div class="input-radio"><input type="radio"
+                                                        id="1kg{{ $product->id }}" name="size" value="1kg">
+                                                    <label for="1kg{{ $product->id }}">1kg</label>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row pt-3">
@@ -112,8 +159,8 @@
                                                     <button class="btn btn-outline-secondary button-minus" type="button"
                                                         data-id="{{ $product->id }}"><i
                                                             class="mdi mdi-minus mdi-24px"></i></button>
-                                                    <input id="qty{{ $product->id }}" type="number" class="form-control"
-                                                        value="0">
+                                                    <input id="qty{{ $product->id }}" type="number"
+                                                        class="form-control" value="0">
                                                     <button class="btn btn-outline-secondary button-plus" type="button"
                                                         data-id="{{ $product->id }}"><i
                                                             class="mdi mdi-plus mdi-24px"></i></button>
@@ -138,7 +185,8 @@
 
             </div>
 
-            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                aria-labelledby="offcanvasRightLabel">
                 <div class="offcanvas-header">
                     <h5 id="offcanvasRightLabel">Cart</h5>
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
@@ -159,23 +207,28 @@
                                             <h5 class="card-title">Product : {{ $cartorder->product->product_name }}
                                             </h5>
                                             <p class="card-text">
-                                                <div class="col-12">
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <button class="btn btn-outline-secondary button-minuscart" type="button"
-                                                            data-id="{{ $cartorder->id }}"><i
-                                                                class="mdi mdi-minus mdi-2px"></i></button>
-                                                        <input id="cartqty{{ $cartorder->id }}" type="number" class="form-control"
-                                                            value="{{ $cartorder->product_qty }}">
-                                                        <button class="btn btn-outline-secondary button-pluscart" type="button"
-                                                            data-id="{{ $cartorder->id }}"><i
-                                                                class="mdi mdi-plus mdi-2px"></i></button>
-                                                    </div>
+                                            <div class="col-12">
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <button class="btn btn-outline-secondary button-minuscart"
+                                                        type="button" data-id="{{ $cartorder->id }}"><i
+                                                            class="mdi mdi-minus mdi-2px"></i></button>
+                                                    <input id="cartqty{{ $cartorder->id }}" type="number"
+                                                        class="form-control" value="{{ $cartorder->product_qty }}">
+                                                    <button class="btn btn-outline-secondary button-pluscart"
+                                                        type="button" data-id="{{ $cartorder->id }}"><i
+                                                            class="mdi mdi-plus mdi-2px"></i></button>
                                                 </div>
+                                            </div>
                                             </p>
-                                            
-                                            <p class="card-text">Quantity : <span id="finalqty{{ $cartorder->id }}">{{ $cartorder->product_qty }}</span> x {{$cartorder->weight->description}}</p>
-                                            <p class="card-text">Unit Price : RM {{ $cartorder->product->unit_price / $cartorder->weight->qty }}</p>
-                                            <p class="card-text">Sub Total : RM <span id="subtotal{{ $cartorder->id }}">{{ $cartorder->sub_total }}</span> </p>
+
+                                            <p class="card-text">Quantity : <span
+                                                    id="finalqty{{ $cartorder->id }}">{{ $cartorder->product_qty }}</span>
+                                                x {{ $cartorder->weight->description }}</p>
+                                            <p class="card-text">Unit Price : RM
+                                                {{ $cartorder->product->unit_price / $cartorder->weight->qty }}</p>
+                                            <p class="card-text">Sub Total : RM <span
+                                                    id="subtotal{{ $cartorder->id }}">{{ $cartorder->sub_total }}</span>
+                                            </p>
                                             <button onclick="removeToCart({{ $cartorder->id }});"
                                                 class="btn btn-danger">Remove</button>
                                         </div>
@@ -188,7 +241,9 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="card-title">
-                                            Total Amount : RM <span id="finalSubtotal">{{ number_format($cart->sum('sub_total') ?? 0, 2) }}</span></h5>
+                                            Total Amount : RM <span
+                                                id="finalSubtotal">{{ number_format($cart->sum('sub_total') ?? 0, 2) }}</span>
+                                        </h5>
                                         <a href="{{ route('add-payment') }}" class="btn btn-success">Checkout</a>
                                     </div>
                                 </div>
@@ -239,8 +294,8 @@
                                                 <span>Your order is out for delivery.</span>
                                                 <div class="pt-2">
 
-                                                    <a href="{{ route('complete-order', ['id' => $op->id,'page' => 'C']) }}"
-                                                              class="btn btn-sm btn-success">Order Received</a>
+                                                    <a href="{{ route('complete-order', ['id' => $op->id, 'page' => 'C']) }}"
+                                                        class="btn btn-sm btn-success">Order Received</a>
                                                 </div>
                                             @elseif ($op->order_status == 'C')
                                                 <span>Your order is completed.</span>
@@ -261,25 +316,29 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.4/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
-        .input-radio{
-        display: inline-block;
-        margin-right: 10px;
-        margin-top: 30px;
-      }
-      input[type=radio] {
-          display: none;
+        .input-radio {
+            display: inline-block;
+            margin-right: 10px;
+            margin-top: 30px;
         }
-        input[type=radio] + label {
-          padding: 10px;
-          border-radius: 10px;
-          border: 1px solid #ddd;
-       
+
+        input[type=radio] {
+            display: none;
         }
-       input[type=radio] + label:hover {
-          border: 1px solid red;
+
+        input[type=radio]+label {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+
         }
-        input[type=radio]:checked + label {
-          border: 1px solid red;
+
+        input[type=radio]+label:hover {
+            border: 1px solid red;
+        }
+
+        input[type=radio]:checked+label {
+            border: 1px solid red;
         }
     </style>
 @endsection
@@ -308,11 +367,11 @@
             // Event handler for plus button
             $('.button-plus').click(function() {
                 var productId = $(this).data('id');
-                var input = $('#qty' + productId);  
+                var input = $('#qty' + productId);
                 var qty = parseInt($(input).val());
                 $(input).val(qty + 1);
             });
-            
+
 
             $('.button-minuscart').click(function() {
                 var cartId = $(this).data('id');
@@ -335,7 +394,7 @@
                     }
 
                 });
-                
+
             });
 
             // Event handler for plus button
@@ -361,7 +420,7 @@
 
                 });
             });
-            
+
 
             $('.filter-button').click(function() {
                 var value = $(this).data('value'); // Get the value associated with the clicked button
@@ -389,22 +448,22 @@
                 size = $('#500g' + product_id).val();
             } else if ($('#1kg' + product_id).prop('checked')) {
                 size = $('#1kg' + product_id).val();
-            }else{
+            } else {
                 size = null;
             }
-            if(size == null){
+            if (size == null) {
                 Swal.fire({
-                title: "Error",
-                text: "Please select size cutting!",
-                icon: "error"
+                    title: "Error",
+                    text: "Please select size cutting!",
+                    icon: "error"
                 });
                 return;
             }
-            if(qty == 0){
+            if (qty == 0) {
                 Swal.fire({
-                title: "Error",
-                text: "Please add quantity!",
-                icon: "error"
+                    title: "Error",
+                    text: "Please add quantity!",
+                    icon: "error"
                 });
                 return;
             }
@@ -417,7 +476,7 @@
                     id: product_id,
                     qty: qty,
                     userid: userid,
-                    uomdescription: size, 
+                    uomdescription: size,
                 },
                 success: function(response) {
                     location.reload();
@@ -442,24 +501,24 @@
 
             });
         }
-//         function updateCartQuantity(cartId, quantity) {
-//     // AJAX call to send data to server-side script
-//     $.ajax({
-//         url: 'update_cart_quantity.php', // Replace with your server-side script URL
-//         method: 'POST',
-//         data: {
-//             cart_id: cartId,
-//             quantity: quantity
-//         },
-//         success: function(response) {
-//             // Handle successful response from server
-//             console.log('Cart quantity updated successfully');
-//         },
-//         error: function(xhr, status, error) {
-//             // Handle error
-//             console.error('Error updating cart quantity:', error);
-//         }
-//     });
-// }
+        //         function updateCartQuantity(cartId, quantity) {
+        //     // AJAX call to send data to server-side script
+        //     $.ajax({
+        //         url: 'update_cart_quantity.php', // Replace with your server-side script URL
+        //         method: 'POST',
+        //         data: {
+        //             cart_id: cartId,
+        //             quantity: quantity
+        //         },
+        //         success: function(response) {
+        //             // Handle successful response from server
+        //             console.log('Cart quantity updated successfully');
+        //         },
+        //         error: function(xhr, status, error) {
+        //             // Handle error
+        //             console.error('Error updating cart quantity:', error);
+        //         }
+        //     });
+        // }
     </script>
 @endsection
