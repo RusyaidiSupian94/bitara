@@ -22,8 +22,14 @@ class UserDetail extends Model
         'address_1',
         'address_2',
         'postcode',
+        'district_id',
         'state_id',
         'contact_no',
         'email_address',
     ];
+
+    public function uPostcode()
+    {
+        return $this->hasOne(Postcode::class, 'id', 'postcode');
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Payment;
+use App\Models\Postcode;
 use App\Models\Product;
 use App\Models\UOM;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class Orders extends Controller
     {
 
         $orders = Order::with('customer.user_details')->where('order_type', 'M')->orderBy('created_at')->get();
-        return view('content.admin.order.dashboards-manual-order', compact( 'orders'));
+        return view('content.admin.order.dashboards-manual-order', compact('orders'));
     }
 
     public function order_add()
@@ -97,7 +98,6 @@ class Orders extends Controller
         ]);
 
         return redirect()->route('dashboard-manual-order');
-
     }
     public function order_edited_store(Request $request, $id)
     {
@@ -154,26 +154,32 @@ class Orders extends Controller
         ]);
 
         return redirect()->route('dashboard-manual-order');
-
     }
 
     public function order_process($id)
     {
         $payment = Payment::with('order.details.product', 'order.details.weight')->where('order_id', $id)->first();
-        return view('content.admin.order.new-order-detail', compact('payment'));
+        if ($payment->delivery_method == 1) {
+            $delivery_fee = 0;
+        } else {
+            $delivery_fee = Postcode::where('id', $payment->postcode)->value('delivery_fee');
+        }
+        return view('content.admin.order.new-order-detail', compact('payment', 'delivery_fee'));
     }
 
     public function order_prepare($id)
     {
         $update_order = Order::where('id', $id)->update(
-            ['order_status' => 'P',
+            [
+                'order_status' => 'P',
                 'fullfillment_status' => 'F',
                 'preparing_at' => now(),
                 'preparing_by' => Auth::user()->username,
             ]
         );
         $update_payment = Payment::where('order_id', $id)->update(
-            ['payment_status' => 'F',
+            [
+                'payment_status' => 'F',
             ]
         );
 
@@ -203,9 +209,11 @@ class Orders extends Controller
     public function order_ready($id)
     {
         $update_order = Order::where('id', $id)->update(
-            ['order_status' => 'R',
+            [
+                'order_status' => 'R',
                 'ready_at' => now(),
-                'ready_by' => Auth::user()->username]
+                'ready_by' => Auth::user()->username
+            ]
         );
 
         if ($update_order) {
@@ -218,9 +226,11 @@ class Orders extends Controller
     public function order_deliver($id)
     {
         $update_order = Order::where('id', $id)->update(
-            ['order_status' => 'D',
+            [
+                'order_status' => 'D',
                 'delivering_at' => now(),
-                'delivering_by' => Auth::user()->username]
+                'delivering_by' => Auth::user()->username
+            ]
         );
 
         if ($update_order) {
@@ -234,9 +244,11 @@ class Orders extends Controller
     public function order_complete($id, $page)
     {
         $update_order = Order::where('id', $id)->update(
-            ['order_status' => 'C',
+            [
+                'order_status' => 'C',
                 'completed_at' => now(),
-                'completed_by' => Auth::user()->username]
+                'completed_by' => Auth::user()->username
+            ]
         );
 
         if ($update_order) {
@@ -249,7 +261,6 @@ class Orders extends Controller
             return redirect()->route('dashboard-order');
         } elseif ($page == 'C') {
             return redirect()->route('dashboard-customer');
-
         }
     }
 
@@ -261,7 +272,6 @@ class Orders extends Controller
         $page = $request->page;
 
         return view('content.admin.order.complete-order-detail', compact('payment', 'page'));
-
     }
 
     public function order_datatable(Request $request)
@@ -283,7 +293,6 @@ class Orders extends Controller
                 return $row->sub_total;
             })
             ->make(true);
-
     }
 
     public function remove_edited_order_item(Request $request)
@@ -292,18 +301,15 @@ class Orders extends Controller
         $order = OrderDetail::find($id)->delete();
         if ($order) {
             return response()->json(['success' => 'Item removed!']);
-
         } else {
             return response()->json(['error' => 'Failed to removed!']);
-
         }
-
     }
 
-      public function order_delete(Request $request)
+    public function order_delete(Request $request)
     {
-        $order_details = OrderDetail::where('order_id',$request->order_id)->get();
-        foreach($order_details as $order){
+        $order_details = OrderDetail::where('order_id', $request->order_id)->get();
+        foreach ($order_details as $order) {
             $order->delete();
         }
         $order = Order::find($request->order_id)->delete();
@@ -311,5 +317,4 @@ class Orders extends Controller
             return true;
         }
     }
-
 }

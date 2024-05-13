@@ -93,6 +93,11 @@
                             </tr>
                             <tr>
                                 <td colspan="2"></td>
+                                <td> Delivery Fee</td>
+                                <td> <span id="delivery_fee">RM {{ $delivery_fee }}</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
                                 <td> Total Amount</td>
                                 <td> <span id="total_amount">RM {{ $payment->payment_amount }}</span></td>
                             </tr>

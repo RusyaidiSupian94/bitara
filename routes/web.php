@@ -46,11 +46,11 @@ Route::post('/order-edited-store/{id}', [Orders::class, 'order_edited_store'])->
 Route::post('/remove-edited-order-item', [Orders::class, 'remove_edited_order_item'])->name('remove-edited-order-item');
 Route::post('/order-delete', [Orders::class, 'order_delete'])->name('delete-order');
 
-
 Route::get('/customer-dashboard', [Customer::class, 'customer_dashboard'])->name('dashboard-customer');
 Route::post('/cart-datatable', [Customer::class, 'cart_datatable'])->name('cart-datatable');
 Route::post('/cart-remove', [Customer::class, 'cart_remove'])->name('cart-remove');
 Route::post('/cart-qty', [Customer::class, 'cart_qty'])->name('cart-qty');
+Route::get('/get_payment_poscode_details', [Customer::class, 'get_payment_poscode_details'])->name('get-payment-poscode-details');
 // Route::get('/checkout', [Customer::class, 'checkout'])->name('checkout');
 
 //payment
@@ -73,6 +73,7 @@ Route::get('/get_poscode_details', [RegisterBasic::class, 'get_poscode_details']
 Route::get('/logout', [LoginBasic::class, 'logout'])->name('logout');
 
 Route::get('/update-profile/{id}', [Profile::class, 'index'])->name('update-profile');
+Route::get('/get_profile_poscode_details', [Profile::class, 'get_profile_poscode_details'])->name('get-profile-poscode-details');
 Route::post('/save-updated-profile', [Profile::class, 'save'])->name('save-updated-profile');
 
 Route::get('/setting/dashboard-staff', [Staff::class, 'index'])->name('dashboard-staff');

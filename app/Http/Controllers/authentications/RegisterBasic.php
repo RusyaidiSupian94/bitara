@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\authentications;
 
 use App\Http\Controllers\Controller;
+use App\Models\Postcode;
 use App\Models\State;
 use App\Models\User;
 use App\Models\UserDetail;
@@ -13,12 +14,15 @@ class RegisterBasic extends Controller
 {
     public function index()
     {
-        $states = State::all();
-        return view('content.authentications.auth-register-basic', compact('states'));
+        $postcodes = Postcode::all();
+        // $stadistes = State::all();
+        return view('content.authentications.auth-register-basic', compact('postcodes'));
     }
 
     public function registerCustomer(Request $request)
     {
+
+        // dd($request->all());
 
         $request->validate([
             'password' => 'required|min:5',
@@ -37,8 +41,10 @@ class RegisterBasic extends Controller
             'address_1' => $request->address_1,
             'address_2' => $request->address_2,
             'postcode' => $request->postcode,
+            'district_id' => $request->district,
             'state_id' => $request->state,
             'email_address' => $request->email,
+            'contact_no' => $request->contact_no,
         ]);
 
         $userrole = UserRole::create([
@@ -47,5 +53,11 @@ class RegisterBasic extends Controller
         ]);
 
         return redirect()->route('auth-login-basic');
+    }
+
+    public function get_poscode_details(Request $request)
+    {
+        $postcode = Postcode::with('state', 'district')->find($request->postcode);
+        return $postcode;
     }
 }

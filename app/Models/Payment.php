@@ -15,7 +15,7 @@ class Payment extends Model
     protected $connection = 'mysql';
     protected $table = 'tbl_payment';
     protected $fillable =
-        [
+    [
         'customer_id',
         'order_id',
         'customer_name',
@@ -29,6 +29,9 @@ class Payment extends Model
         'payment_status',
         'crated_at',
         'updated_at',
+        'postcode',
+        'district_id',
+        'state_id',
     ];
 
     public function order()
@@ -37,5 +40,4 @@ class Payment extends Model
     }
 
     use HasFactory;
-
 }

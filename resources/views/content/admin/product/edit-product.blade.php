@@ -60,7 +60,7 @@
                                     <select class="form-select" id="uom" name="uom" autofocus disabled>
                                         <option selected disabled>Choose..</option>
                                         @foreach ($uoms as $uom)
-                                            <option value="{{ $uom->id }} {{ $uom->id == 1 ? 'selected' : '' }}">
+                                            <option value="{{ $uom->id }}" {{ $uom->id == 1 ? 'selected' : '' }}>
                                                 {{$uom->description }}
                                             </option>
                                         @endforeach

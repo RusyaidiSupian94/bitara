@@ -4,6 +4,7 @@
 
 @section('page-style')
     <!-- Page -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}">
 @endsection
 
@@ -45,6 +46,12 @@
                                         <label for="lname">Last Name <span class="text-danger">*</span></label>
                                     </div>
                                     <div class="form-floating form-floating-outline mb-3">
+                                        <input type="number" class="form-control" id="contact_no" name="contact_no"
+                                               placeholder="Enter your phone number" autofocus value="{{ old('contact_no') }}"
+                                               pattern="[0-9]*" inputmode="numeric" required>
+                                        <label for="contact_no">Contact No.<span class="text-danger">*</span></label>
+                                    </div>
+                                    <div class="form-floating form-floating-outline mb-3">
                                         <input type="text" class="form-control" id="address_1" name="address_1"
                                             placeholder="Enter your address" autofocus required
                                             value="{{ old('address_1') }}">
@@ -55,13 +62,32 @@
                                             placeholder="Enter your address" autofocus value="{{ old('address_2') }}">
                                         <label for="address_2">Address 2</label>
                                     </div>
+                                    
+                                    <div class="col-12 col-md-6">
+                                        <div class="form-floating form-floating-outline mb-3">
+                                            <div class="form-floating form-floating-outline">
+                                                <select onchange="onChangePostcode(this)" id="postcode" name="postcode" class="form-select" required>
+                                                    <option selected disabled>Please Choose</option>
+                                                    @foreach ($postcodes as $pcode)
+                                                        <option @selected(old('postcode') == $pcode->id)
+                                                            value="{{ $pcode->id }}">{{ $pcode->postcode }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <label for="postcode">Postcode<span class="text-danger">*</span></label>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-12 col-md-6">
                                             <div class="form-floating form-floating-outline mb-3">
-                                                <input type="text" class="form-control" id="postcode" name="postcode"
-                                                    placeholder="Enter your postcode" autofocus required
-                                                    value="{{ old('postcode') }}">
-                                                <label for="postcode">Postcode<span class="text-danger">*</span></label>
+                                                <div class="form-floating form-floating-outline">
+                                                    <select id="district" name="district" class="form-select" required>
+                                                        <option selected disabled>Please Choose</option>
+                                                      
+                                                    </select>
+                                                    <label for="district">District<span class="text-danger">*</span></label>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-6">
@@ -69,11 +95,7 @@
                                                 <div class="form-floating form-floating-outline">
                                                     <select id="state" name="state" class="form-select" required>
                                                         <option selected disabled>Please Choose</option>
-                                                        @foreach ($states as $state)
-                                                            <option @selected(old('state') == $state->id)
-                                                                value="{{ $state->id }}">{{ $state->state_name }}
-                                                            </option>
-                                                        @endforeach
+
                                                     </select>
                                                     <label for="state">State<span class="text-danger">*</span></label>
                                                 </div>
@@ -177,9 +199,16 @@
 @endsection
 
 @section('page-script')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0/js/select2.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    jQuery.noConflict();
+
+
         $(document).ready(function() {
+            $('#postcode').select2();s
 
             $('#confirm_password').on('input', function() {
                 var password = $('#password').val();
@@ -231,5 +260,32 @@
                 }
             });
         });
+
+        // JavaScript
+        function onChangePostcode(e) {
+            var selectedPostcode = e.value;
+            var stateDropdown = $('#state');
+                var districtDropdown = $('#district');
+            $.ajax({
+                url: "{{route('get-poscode-details')}}", // Replace with your actual endpoint
+                type: 'GET',
+                data: { postcode: selectedPostcode },
+                success: function(response) {
+
+                    console.log(response);
+                        stateDropdown.empty().append('<option selected disabled>Please Choose</option>');
+                        districtDropdown.empty().append('<option selected disabled>Please Choose</option>');
+
+                            stateDropdown.append('<option selected value="' + response.state.id + '">' + response.state.state_name + '</option>');
+            
+                            districtDropdown.append('<option selected value="' + response.district.id + '">' + response.district.district_name + '</option>');
+
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching state and district data:", error);
+                }
+            });
+        }
+
     </script>
 @endsection

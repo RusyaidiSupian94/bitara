@@ -5,10 +5,13 @@ namespace App\Http\Controllers\dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Category;
+use App\Models\District;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Payment;
+use App\Models\Postcode;
 use App\Models\Product;
+use App\Models\State;
 use App\Models\UOM;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -97,14 +100,20 @@ class Customer extends Controller
 
     public function add_payment()
     {
+        $states = State::all();
+        $districts = District::all();
+        $postcodes = Postcode::all();
         $user = Auth::user()->id;
-        $customer = User::with('user_details')->find($user);
+        $customer = User::with('user_details.uPostcode')->find($user);
         $cart = Cart::with('product', 'weight')->where('customer_id', $user)->get();
 
-        return view('content.payment.add-payment', compact('customer', 'cart'));
+
+        return view('content.payment.add-payment', compact('customer', 'cart', 'states', 'districts', 'postcodes'));
     }
     public function order_payment(Request $request, $id)
     {
+        $user = User::with('user_details')->find($id);
+
         $order = Order::create([
             'customer_id' => $id,
             'order_status' => 'N',
@@ -133,15 +142,18 @@ class Customer extends Controller
         $payment = Payment::create([
             'order_id' => $order->id,
             'customer_id' => $id,
-            'customer_name' => $request->customer_name,
-            'customer_address' => $request->customer_address,
-            'customer_contact' => $request->customer_contact,
+            'customer_name' => $request->customer_name ?? $user->user_details->fname . ' ' . $user->user_details->lname,
+            'customer_address' => $request->customer_address ?? $user->user_details->address_1 . ' ' . $user->user_details->address_2,
+            'customer_contact' => $request->customer_contact ?? $user->user_details->address_1,
             'delivery_method' => $request->radioDeliveryMethod,
             'payment_date' => now(),
-            'payment_amount' => $request->total_amount,
+            'payment_amount' => $request->radioDeliveryMethod == 1 ? $request->total_amount : $request->total_amount + $request->delivery_fee,
             'payment_method' => $request->radioPaymentMethod,
             'payment_receipt' => $request->payment_receipt,
             'payment_status' => 'U',
+            'postcode' => $request->postcode ?? $user->user_details->postcode,
+            'district_id' => $request->district ?? $user->user_details->district_id,
+            'state_id' => $request->state ?? $user->user_details->state_id,
             'created_at' => now(),
         ]);
 
@@ -168,5 +180,13 @@ class Customer extends Controller
             Session::flash('error', 'Payment process failed. Please try again later.');
         }
         return redirect()->route('dashboard-customer');
+    }
+    public function get_payment_poscode_details(Request $request)
+    {
+        $user = Auth::user();
+        $postcode = Postcode::with('state', 'district')->find($request->postcode);
+        $sumsubtotal = Cart::where('customer_id', $user->id)->sum('sub_total');
+
+        return response()->json(['success' => 'Successfully remove from cart', 'data' => $postcode, 'total_amount' => $sumsubtotal]);
     }
 }

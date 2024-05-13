@@ -44,7 +44,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-md-6">
                                             <div class="form-floating form-floating-sm form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="fname"
                                                     name="fname" placeholder="Enter your first name"
@@ -52,7 +52,7 @@
                                                 <label for="fname">First Name <span class="text-danger">*</span></label>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-md-6">
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="lname"
                                                     name="lname" placeholder="Enter your last name"
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-md-6">
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="address_1"
                                                     name="address_1" placeholder="Enter your address"
@@ -70,7 +70,7 @@
                                                 <label for="address_1">Address 1 <span class="text-danger">*</span></label>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-12 col-md-6">
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="address_2"
                                                     name="address_2" placeholder="Enter your address"
@@ -79,9 +79,61 @@
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <div class="row">
+                                        <div class="col-12 col-md-6">
+
+                                            <div class="form-floating form-floating-outline mb-3">
+                                                <input type="number" class="form-control" id="contact_no" name="contact_no"
+                                                       placeholder="Enter your phone number" autofocus value="{{ $user->user_details->contact_no}}"
+                                                       pattern="[0-9]*" inputmode="numeric" required>
+                                                <label for="contact_no">Contact No.<span class="text-danger">*</span></label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-floating form-floating-outline mb-3">
+                                                <div class="form-floating form-floating-outline">
+                                                    <select onchange="onChangePostcode(this)" id="postcode" name="postcode" class="form-select" required>
+                                                        @foreach ($postcodes as $pcode)
+                                                            <option value="{{ $pcode->id }}" {{ $pcode->id == $user->user_details->postcode ? 'selected' : '' }}>{{ $pcode->postcode }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                    <label for="postcode">Postcode<span class="text-danger">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-floating form-floating-outline mb-3">
+                                                <div class="form-floating form-floating-outline">
+                                                    <select id="district" name="district" class="form-select" required>
+                                                        @foreach ($districts as $district)
+                                                        <option value="{{ $district->id }}" {{ $district->id == $user->user_details->district_id ? 'selected' : '' }}>{{ $district->district_name }}
+                                                        </option>
+                                                    @endforeach
+                                                    </select>
+                                                    <label for="district">District<span class="text-danger">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="form-floating form-floating-outline mb-3">
+                                                <div class="form-floating form-floating-outline">
+                                                    <select id="state" name="state" class="form-select" required>
+                                                        @foreach ($states as $state)
+                                                        <option value="{{ $state->id }}" {{ $state->id == $user->user_details->state_id ? 'selected' : '' }}>{{ $state->state_name }}
+                                                        </option>
+                                                    @endforeach
+                                                    </select>
+                                                    <label for="state">State<span class="text-danger">*</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    {{-- <div class="row">
                                         <div class="col-12 col-md-6">
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="postcode"
@@ -106,7 +158,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                     <hr>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -116,9 +168,8 @@
                                                         <input type="password" id="old_password" class="form-control"
                                                             name="old_password"
                                                             placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                            aria-describedby="old_password" required />
-                                                        <label for="old_password">Old Password<span
-                                                                class="text-danger">*</span></label>
+                                                            aria-describedby="old_password" />
+                                                        <label for="old_password">Old Password</label>
                                                     </div>
                                                     <span class="input-group-text cursor-pointer"><i
                                                             class="mdi mdi-eye-off-outline"></i></span>
@@ -138,9 +189,8 @@
                                                         <input type="password" id="password" class="form-control"
                                                             name="password"
                                                             placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                            aria-describedby="password" required />
-                                                        <label for="password">Password<span
-                                                                class="text-danger">*</span></label>
+                                                            aria-describedby="password" />
+                                                        <label for="password">Password</label>
                                                     </div>
                                                     <span class="input-group-text cursor-pointer"><i
                                                             class="mdi mdi-eye-off-outline"></i></span>
@@ -160,9 +210,8 @@
                                                         <input type="password" id="confirm_password" class="form-control"
                                                             name="confirm_password"
                                                             placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                            aria-describedby="password" required />
-                                                        <label for="confirm_password">Confirm Password<span
-                                                                class="text-danger">*</span></label>
+                                                            aria-describedby="password" />
+                                                        <label for="confirm_password">Confirm Password</label>
 
                                                     </div>
                                                     <span class="input-group-text cursor-pointer"><i
@@ -186,10 +235,17 @@
                                         </div>
 
                                         <div class="col-md-2">
-                                            <button type="button" href="javascript(0)"
-                                                class="btn btn-warning d-grid w-100">
+
+                                            @if($user->role->role_id == 3)
+                                            <a href="{{ route('dashboard-customer') }}" class="btn btn-warning d-grid w-100">
                                                 Back
-                                            </button>
+                                            </a>
+                                        @else
+                                            <a href="{{ route('dashboard-analytics') }}" class="btn btn-warning d-grid w-100">
+                                                Back
+                                            </a>
+                                        @endif
+                                        
                                         </div>
                                     </div>
                                 </div>
@@ -234,5 +290,29 @@
             //     }
             // })
         });
+        function onChangePostcode(e) {
+            var selectedPostcode = e.value;
+            var stateDropdown = $('#state');
+                var districtDropdown = $('#district');
+            $.ajax({
+                url: "{{route('get-poscode-details')}}", // Replace with your actual endpoint
+                type: 'GET',
+                data: { postcode: selectedPostcode },
+                success: function(response) {
+
+                    console.log(response);
+                        stateDropdown.empty().append('<option selected disabled>Please Choose</option>');
+                        districtDropdown.empty().append('<option selected disabled>Please Choose</option>');
+
+                            stateDropdown.append('<option selected value="' + response.state.id + '">' + response.state.state_name + '</option>');
+            
+                            districtDropdown.append('<option selected value="' + response.district.id + '">' + response.district.district_name + '</option>');
+
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching state and district data:", error);
+                }
+            });
+        }
     </script>
 @endsection
