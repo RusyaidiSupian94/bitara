@@ -141,9 +141,7 @@
                                             <tr>
                                                 <th scope="col">Delivery Fee: </th>
                                                 <th scope="col" colspan="3">
-                                                    <input type="text" id="delivery_fee" name="delivery_fee"
-                                                         class="form-control" value="{{$customer->user_details->uPostcode->delivery_fee}}" autofocus required />
-
+                                                    <span id="delivery_fee" name="delivery_fee">{{$customer->user_details->uPostcode->delivery_fee}}</span>
                                                     <input type="hidden" name="hidden_delivery_fee" id="hidden_delivery_fee" value="{{$customer->user_details->uPostcode->delivery_fee}}">
                                                 </th>
                                             </tr>
@@ -353,7 +351,7 @@
                 // Check if the selected radio button has value '1'
                 var val = $('#hidden_delivery_fee').val();
                 if ($(this).val() === '1') {
-                    $('#delivery_fee').val(0);
+                    $('#delivery_fee').text(0.00);
                     $('#delivery_fee_span').text(0.00);
                     var totalAmountText = $('#total_amount_span').text();
                     
@@ -365,7 +363,7 @@
                     $('input[type="text"], input[type="number"], input[type="checkbox"], select, textarea').prop('disabled', true);
                     
                 } else {
-                    $('#delivery_fee').val(val);
+                    $('#delivery_fee').text(val);
                     $('#delivery_fee_span').text(val);
                     var totalAmountText = $('#total_amount_span').text();
                     var totalAmountFloat = parseFloat(totalAmountText)+parseFloat(val);
@@ -399,7 +397,7 @@
                 type: 'GET',
                 data: { postcode: selectedPostcode },
                 success: function(response) {
-                    $('#delivery_fee').val(response.data.delivery_fee);
+                    $('#delivery_fee').text(response.data.delivery_fee);
                     $('#delivery_fee_span').text(response.data.delivery_fee);
                     $('#hidden_delivery_fee').val(response.data.delivery_fee);
                     $('#total_amount_span').text(parseFloat(response.total_amount)+parseFloat(response.data.delivery_fee));
