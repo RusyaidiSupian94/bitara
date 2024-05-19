@@ -54,16 +54,27 @@
       }
     @endphp
 
+    @php
+    $user = \App\Models\User::with('role')->find(Illuminate\Support\Facades\Auth::id());
+    $role = $user->role ? $user->role->role_id : null;
+    @endphp
+    @if($role == 1)
     {{-- main menu --}}
     <li class="menu-item {{$activeClass}}">
       <a href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}" class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
         @isset($menu->icon)
-        <i class="{{ $menu->icon }}"></i>
+          <i class="{{ $menu->icon }}"></i>
         @endisset
         <div>{{ isset($menu->name) ? __($menu->name) : '' }}</div>
         @isset($menu->badge)
-        <div class="badge bg-{{ $menu->badge[0] }} rounded-pill ms-auto">{{ $menu->badge[1] }}</div>
-
+          @if($menu->slug == 'ordering')
+              @php
+                $orderingCount = \App\Models\Order::where('order_status', 'P')->count();
+              @endphp
+              <div class="badge bg-{{ $menu->badge[0] }} rounded-pill ms-auto">{{$orderingCount}}</div>
+          @else
+              <div class="badge bg-{{ $menu->badge[0] }} rounded-pill ms-auto">{{$menu->badge[1]}}</div>
+          @endif
         @endisset
       </a>
 
@@ -72,6 +83,32 @@
       @include('layouts.sections.menu.submenu',['menu' => $menu->submenu])
       @endisset
     </li>
+    @else
+    @if($menu->slug == 'ordering')
+    <li class="menu-item {{$activeClass}}">
+
+      <a href="{{ isset($menu->url) ? url($menu->url) : 'javascript:void(0);' }}" class="{{ isset($menu->submenu) ? 'menu-link menu-toggle' : 'menu-link' }}" @if (isset($menu->target) and !empty($menu->target)) target="_blank" @endif>
+        @isset($menu->icon)
+          <i class="{{ $menu->icon }}"></i>
+        @endisset
+        <div>{{ isset($menu->name) ? __($menu->name) : '' }}</div>
+        @isset($menu->badge)
+          @if($menu->slug == 'ordering')
+              @php
+                $orderingCount = \App\Models\Order::where('order_status', 'P')->count();
+              @endphp
+              <div class="badge bg-{{ $menu->badge[0] }} rounded-pill ms-auto">{{$orderingCount}}</div>
+          @else
+              <div class="badge bg-{{ $menu->badge[0] }} rounded-pill ms-auto">{{$menu->badge[1]}}</div>
+          @endif
+        @endisset
+      </a>
+    </li>
+    @endif
+    @endif
+
+
+
     @endif
     @endforeach
   </ul>

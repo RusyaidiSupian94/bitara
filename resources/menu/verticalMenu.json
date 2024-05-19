@@ -10,21 +10,14 @@
       "url": "/product-dashboard",
       "name": "Products",
       "icon": "menu-icon tf-icons mdi mdi-view-grid-outline",
-      "slug": "products",
-      "badge": ["danger", "5"]
+      "slug": "products"
     },
     {
       "url": "/order-dashboard",
       "name": "Ordering",
       "icon": "menu-icon tf-icons mdi mdi-lifebuoy",
       "slug": "ordering",
-      "badge": ["danger", "2"]
-    },
-    {
-      "url": "/manual-order-dashboard",
-      "name": "Manual Ordering",
-      "icon": "menu-icon tf-icons mdi mdi-table",
-      "slug": "ordering"
+      "badge": ["danger", "0"]
     },
     {
       "url": "/reporting-dashboard",

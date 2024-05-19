@@ -1,0 +1,14 @@
+{
+  "menu": [
+    {
+      "url": "/order-dashboard",
+      "name": "Ordering",
+      "icon": "menu-icon tf-icons mdi mdi-lifebuoy",
+      "slug": "ordering",
+      "badge": [
+        "danger",
+        "0"
+      ]
+    }
+  ]
+}
