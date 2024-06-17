@@ -94,9 +94,13 @@
                         </button>
                     </div>
 
+                </div> <br> <br>
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" id="search-bar" class="form-control" placeholder="Search for products...">
+                    </div>
                 </div>
-
-                <br>
+                <br> <br>
                 <div class="row gy-4">
                     <!-- Product List from database -->
                     <div class="container">
@@ -118,14 +122,14 @@
                             @endif
                             @php $currentCategory = $product->category->category_description; @endphp
 
-                            <div class="col-sm-4 col-md-3 py-2">
+                            <div class="col-sm-4 col-md-3 py-2 product-item">
                                 <div class="card  h-100 card-container {{ $product->category->category_description }}">
                                     <div class="card-body h-75">
                                         <img height="250" src="{{ url('/storage/product/' . $product->product_img) }}"
                                             class="card-img-top image-fluid" alt="...">
                                         <div class="row">
                                             <div class="col-12 col-md-6">
-                                                <h6 class="text-start mb-0 pt-2">{{ $product->product_name }}</h6>
+                                                <h6 class="text-start mb-0 pt-2 product-name">{{ $product->product_name }}</h6>
                                             </div>
                                             <div class="col-12 col-md-6">
                                                 <h6 class="text-end mb-0 pt-2">RM{{ $product->unit_price }} / <small
@@ -419,9 +423,23 @@
                     }
 
                 });
+
+                
             });
 
-
+            $('#search-bar').on('keyup', function() {
+                console.log('a');
+                var searchTerm = $(this).val().toLowerCase();
+                $('.product-item').each(function() {
+                    console.log('b');
+                    var productName = $(this).find('.product-name').text().toLowerCase();
+                    if (productName.includes(searchTerm)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
             $('.filter-button').click(function() {
                 var value = $(this).data('value'); // Get the value associated with the clicked button
 
