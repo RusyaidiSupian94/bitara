@@ -34,17 +34,11 @@
                 <div class="p-2">
 
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <!-- <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Main</button>
-                        </li> -->
+                    
                         <li class="nav-item" role="presentation">
                             <button class="nav-link active " id="order-tab" data-bs-toggle="tab" data-bs-target="#order-tab-pane" type="button" role="tab" aria-controls="order-tab-pane" aria-selected="true">Sales</button>
                         </li>
-                        <!-- <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="product-tab" data-bs-toggle="tab"
-                                    data-bs-target="#product-tab-pane" type="button" role="tab"
-                                    aria-controls="product-tab-pane" aria-selected="false">Product</button>
-                            </li> -->
+                  
                         <li class="nav-item" role="presentation">
                             <button class="nav-link" id="pnl-tab" data-bs-toggle="tab" data-bs-target="#pnl-tab-pane" type="button" role="tab" aria-controls="pnl-tab-pane" aria-selected="false">Product</button>
                         </li>
@@ -52,27 +46,26 @@
 
 
                     <div class="tab-content" id="myTabContent">
-                        <!-- Main -->
-                        <!-- <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                            <div class="row gy-4">
-                                <div class="col-12">
-                                    <div class="card h-100">
-                                        <div class="card-header pb-0">
-                                            <h4 class="mb-0">RM86.4k</h4>
-                                        </div>
-                                        <div class="card-body">
-                                            <div id="totalProfitLineChart" class="mb-3"></div>
-                                            <h6 class="text-center mb-0">Total Profit</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-                        <!-- End Main -->
-                        <!-- Ordering -->
+                
 
                         <div class="tab-pane fade show active" id="order-tab-pane" role="tabpanel" aria-labelledby="order-tab" tabindex="0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label for="min-date">Start Date:</label>
+                                    <input type="date" id="min-date" class="date-range-filter form-control" placeholder="YYYY-MM-DD">
+                                </div>
+                                <div class="col-md-3">
 
+                                    <label for="max-date">End Date:</label>
+                                    <input type="date" id="max-date" class="date-range-filter form-control" placeholder="YYYY-MM-DD">
+                                </div>
+                                <div class="col-md-3">
+                                   <br>
+                                    <button id="reset-filters" type="button" class="btn btn-sm btn-primary">
+                                        Reset
+                                    </button>
+                                </div>
+                            </div><br>
                             <table id="orderTbl" class="table table-bordered table-sm">
                                 <thead class="table-light">
                                     <tr>
@@ -236,6 +229,12 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.2/css/buttons.dataTables.css" />
 
+<style>
+.dt-search {
+    float: right;
+    margin-bottom: 20px; /* Optional: Add space below the search bar */
+}
+</style>
 
 @endsection
 @section('page-script')
@@ -252,24 +251,70 @@
 <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.print.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.0.2/js/buttons.html5.min.js"></script>
 
-
-
-
-
-
-
 <script>
     $(document).ready(function() {
-        $('#productTbl').DataTable({
+        var table_product= $('#productTbl').DataTable({
             dom: '<"top"B>rt<"bottom"lp><"clear">',
             buttons: ['excel']
         });
 
 
-        $('#orderTbl').DataTable({
-            dom: '<"top"B>rt<"bottom"lp><"clear">',
-            buttons: ['excel']
+        var table =   $('#orderTbl').DataTable({
+            dom: 'Bfrtip',
+    buttons: [
+        'excel'
+    ]
         });
+        $('.dt-input').addClass('my-2');
+
+            $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var min = $('#min-date').val();
+                var max = $('#max-date').val();
+                var dateString = data[3];
+                var parts = dateString.split(/[\s-:]/);
+                if (parts.length < 6) {
+                    console.error('Unexpected date format:', dateString);
+                    return false;
+                }
+                var day = parseInt(parts[0], 10);
+                var month = parseInt(parts[1], 10) - 1;
+                var year = parseInt(parts[2], 10);
+                var hour = parseInt(parts[3], 10);
+                var minute = parseInt(parts[4], 10);
+                var ampm = parts[5].toLowerCase();
+
+                if (ampm === 'pm' && hour < 12) hour += 12;
+                if (ampm === 'am' && hour === 12) hour = 0;
+                var dateObj = new Date(year, month, day, hour, minute);
+                var minDate = min ? new Date(min) : null;
+                var maxDate = max ? new Date(max) : null;
+                console.log('Parsed Date:', dateObj);
+                console.log('Min Date:', minDate);
+                console.log('Max Date:', maxDate);
+
+                if (
+                    (!minDate && !maxDate) ||
+                    (!minDate && dateObj <= maxDate) ||
+                    (minDate <= dateObj && !maxDate) ||
+                    (minDate <= dateObj && dateObj <= maxDate)
+                ) {
+                    return true;
+                }
+                return false;
+            }
+        );
+
+    // Event listener to the two range filtering inputs to redraw on input
+    $('#min-date, #max-date').on('change', function() {
+        table.draw();
+    });
+    $('#reset-filters').on('click', function() {
+            $('#min-date').val('');
+            $('#max-date').val('');
+            table.draw();
+        });
+    
     });
 
 
