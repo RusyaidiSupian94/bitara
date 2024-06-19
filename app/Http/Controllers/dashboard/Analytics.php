@@ -37,31 +37,33 @@ class Analytics extends Controller
 
         $today = Carbon::now()->timezone('Asia/Kuala_Lumpur')->toDateString();
 
-        $filter = $request->filter;
-        if ($filter == 1) {
-            $data['sale'] = Order::whereDate('date', $today)->sum('total_amount');
-            $data['order'] = Order::whereDate('date', $today)->count();
-            $data['delivery'] = Order::with('payment')->whereDate('date', $today)->whereHas('payment', function ($payment) {
-                $payment->where('delivery_method', '1');
-            })->count();
-            $data['pickup'] = Order::with('payment')->whereDate('date', $today)->whereHas('payment', function ($payment) {
-                $payment->where('delivery_method', '2');
-            })->count();
-        } else {
+        $min_date = $request->min;
+        $max_date = $request->max;
 
-            $firstDayOfMonth = now()->firstOfMonth()->format('Y-m-d');
+        $orderQuery = Order::query();
 
-            $lastDayOfMonth = now()->lastOfMonth()->format('Y-m-d');
-
-            $data['sale'] = Order::whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->sum('total_amount');
-            $data['order'] = Order::whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->count();
-            $data['delivery'] = Order::with('payment')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('payment', function ($payment) {
-                $payment->where('delivery_method', '1');
-            })->count();
-            $data['pickup'] = Order::with('payment')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('payment', function ($payment) {
-                $payment->where('delivery_method', '2');
-            })->count();
+        if ($min_date) {
+            // Filter based on min_date if provided
+            $orderQuery->whereDate('date', '>=', $min_date);
         }
+        if ($max_date) {
+            // Filter based on max_date if provided
+            $orderQuery->whereDate('date', '<=', $max_date);
+        }
+        if (!isset($min_date) && !isset($max_date)) {
+            $orderQuery->whereDate('date', $today);
+        }
+        $data['sale'] = $orderQuery->sum('total_amount');
+        $data['order'] = $orderQuery->count();
+
+        $data['delivery'] = $orderQuery->whereHas('payment', function ($payment) {
+            $payment->where('delivery_method', '1');
+        })->count();
+
+        $data['pickup'] = $orderQuery->whereHas('payment', function ($payment) {
+            $payment->where('delivery_method', '2');
+        })->count();
+
         return $data;
     }
     public function dashboard_data_trend(Request $request)
@@ -69,50 +71,45 @@ class Analytics extends Controller
         $data = [];
 
         $today = Carbon::now()->timezone('Asia/Kuala_Lumpur')->toDateString();
-        $filter = $request->filter;
-        $category = Category::all();
+        $min_date = $request->min;
+        $max_date = $request->max;
 
-        $data['category'] = $category->pluck('category_description');
+        // Get all categories
+        $categories = Category::all();
 
-        if ($filter == 1) {
-            foreach ($category as $key => $ctgy) {
+        // Initialize data array to store results
+        $data['category'] = $categories->pluck('category_description');
 
-                $data[$ctgy->category_description] = Order::with('details.product')->whereDate('date', $today)->whereHas('details.product', function ($p) use ($ctgy) {
-                    $p->where('category_id', $ctgy->id);
-                })->count();
-            }
-        } else {
+        // Initialize query builder for orders
+        $orderQuery = Order::query();
 
-            $firstDayOfMonth = now()->firstOfMonth()->format('Y-m-d');
+        // Apply date range filters if provided
 
-            $lastDayOfMonth = now()->lastOfMonth()->format('Y-m-d');
-
-            foreach ($category as $key => $ctgy) {
-
-                $data[$ctgy->category_description] = Order::with('details.product')->whereBetween('date', [$firstDayOfMonth, $lastDayOfMonth])->whereHas('details.product', function ($p) use ($ctgy) {
-                    $p->where('category_id', $ctgy->id);
-                })->count();
-            }
+        if ($min_date) {
+            // Filter based on min_date if provided
+            $orderQuery->whereDate('date', '>=', $min_date);
         }
+        if ($max_date) {
+            // Filter based on max_date if provided
+            $orderQuery->whereDate('date', '<=', $max_date);
+        }
+        if (!isset($min_date) && !isset($max_date)) {
+            $orderQuery->whereDate('date', $today);
+        }
+        // Iterate over categories to count orders for each category
+        foreach ($categories as $category) {
+            $count = $orderQuery->whereHas('details.product', function ($query) use ($category) {
+                $query->where('category_id', $category->id);
+            })->count();
+
+            // Assign count to corresponding category description key in $data array
+            $data[$category->category_description] = $count;
+        }
+
         return $data;
     }
 
-    // public function customer_dashboard()
-    // {
-    //     $user = Auth::user();
-    //     $category = Category::get();
-    //     $products = Product::with('weight')->get();
-    //     // $order = Order::with('details')->where('customer_id', $user->id)->where('order_status', 'T')->get();
 
-    //     $order = OrderDetail::with('order', 'product')->whereHas('order', function ($q) use ($user) {
-    //         $q->where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U');
-    //     })->get();
-
-    //     $order_paid = Order::with('details.product', 'details.weight')->where('customer_id', $user->id)->whereNotIn('order_status', ['T'])->where('fullfillment_status', 'F')->get();
-
-    //     $totalCart = Order::where('customer_id', $user->id)->whereIn('order_status', ['T', 'N'])->where('fullfillment_status', 'U')->count();
-    //     return view('content.customer.dashboards-customer', compact('products', 'user', 'order', 'totalCart', 'category', 'order_paid'));
-    // }
     public function product_dashboard()
     {
         $products = Product::with('category', 'weight')->orderBy('created_at')->get();
