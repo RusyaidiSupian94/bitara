@@ -48,7 +48,7 @@
                                             <div class="form-floating form-floating-sm form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="fname"
                                                     name="fname" placeholder="Enter your first name"
-                                                    value="{{ $user->user_details->fname }}" autofocus required>
+                                                    value="{{ $user->user_details->fname ?? '' }}" autofocus required>
                                                 <label for="fname">First Name <span class="text-danger">*</span></label>
                                             </div>
                                         </div>
@@ -56,7 +56,7 @@
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="lname"
                                                     name="lname" placeholder="Enter your last name"
-                                                    value="{{ $user->user_details->lname }}" autofocus required>
+                                                    value="{{ $user->user_details->lname ?? '' }}" autofocus required>
                                                 <label for="lname">Last Name <span class="text-danger">*</span></label>
                                             </div>
                                         </div>
@@ -66,7 +66,7 @@
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="address_1"
                                                     name="address_1" placeholder="Enter your address"
-                                                    value="{{ $user->user_details->address_1 }}" autofocus required>
+                                                    value="{{ $user->user_details->address_1 ?? '' }}" autofocus required>
                                                 <label for="address_1">Address 1 <span class="text-danger">*</span></label>
                                             </div>
                                         </div>
@@ -74,7 +74,7 @@
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="text" class="form-control form-control-sm" id="address_2"
                                                     name="address_2" placeholder="Enter your address"
-                                                    value="{{ $user->user_details->address_2 }}" autofocus>
+                                                    value="{{ $user->user_details->address_2 ?? '' }}" autofocus>
                                                 <label for="address_2">Address 2</label>
                                             </div>
                                         </div>
@@ -84,7 +84,7 @@
 
                                             <div class="form-floating form-floating-outline mb-3">
                                                 <input type="number" class="form-control" id="contact_no" name="contact_no"
-                                                       placeholder="Enter your phone number" autofocus value="{{ $user->user_details->contact_no}}"
+                                                       placeholder="Enter your phone number" autofocus value="{{ $user->user_details->contact_no ?? ''}}"
                                                        pattern="[0-9]*" inputmode="numeric" required>
                                                 <label for="contact_no">Contact No.<span class="text-danger">*</span></label>
                                             </div>
@@ -94,7 +94,8 @@
                                                 <div class="form-floating form-floating-outline">
                                                     <select onchange="onChangePostcode(this)" id="postcode" name="postcode" class="form-select" required>
                                                         @foreach ($postcodes as $pcode)
-                                                            <option value="{{ $pcode->id }}" {{ $pcode->id == $user->user_details->postcode ? 'selected' : '' }}>{{ $pcode->postcode }}
+                                                        <option value="{{ $pcode->id }}" {{ $pcode->id == ($user->user_details->postcode ?? '') ? 'selected' : '' }}>
+                                                            {{ $pcode->postcode }}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -109,7 +110,8 @@
                                                 <div class="form-floating form-floating-outline">
                                                     <select id="district" name="district" class="form-select" required>
                                                         @foreach ($districts as $district)
-                                                        <option value="{{ $district->id }}" {{ $district->id == $user->user_details->district_id ? 'selected' : '' }}>{{ $district->district_name }}
+                                                        <option value="{{ $district->id }}" {{ $district->id == ($user->user_details->district_id ?? '') ? 'selected' : '' }}>
+                                                            {{ $district->district_name }}
                                                         </option>
                                                     @endforeach
                                                     </select>
@@ -122,7 +124,8 @@
                                                 <div class="form-floating form-floating-outline">
                                                     <select id="state" name="state" class="form-select" required>
                                                         @foreach ($states as $state)
-                                                        <option value="{{ $state->id }}" {{ $state->id == $user->user_details->state_id ? 'selected' : '' }}>{{ $state->state_name }}
+                                                        <option value="{{ $state->id }}" {{ $state->id == ($user->user_details->state_id ?? '') ? 'selected' : '' }}>
+                                                            {{ $state->state_name }}
                                                         </option>
                                                     @endforeach
                                                     </select>

@@ -13,11 +13,27 @@
 
 @section('content')
     <div class="row gy-4">
-
         <!-- Transactions -->
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="min-date">Start Date:</label>
+                            <input type="date" id="min-date" class="date-range-filter form-control" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-md-3">
+            
+                            <label for="max-date">End Date:</label>
+                            <input type="date" id="max-date" class="date-range-filter form-control" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="col-md-3">
+                           <br>
+                            <button id="reset-filters" type="button" class="btn btn-sm btn-primary">
+                                Reset
+                            </button>
+                        </div>
+                    </div><br><hr>
                     <div class="d-flex align-items-center justify-content-between">
                         <h5 class="card-title m-0 me-2">Bitara Mart Transactions
                             ({{ now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y') }})</h5>
@@ -26,10 +42,10 @@
                                 aria-haspopup="true" aria-expanded="false">
                                 <i class="mdi mdi-dots-vertical mdi-24px"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                            {{-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
                                 <a class="dropdown-item" onclick="getToday(1)" id="todayOption">Today</a>
                                 <a class="dropdown-item" onclick="getToday(2)" id="monthOption">Month</a>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -145,10 +161,10 @@
                                 aria-haspopup="true" aria-expanded="false">
                                 <i class="mdi mdi-dots-vertical mdi-24px"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                            {{-- <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
                                 <a class="dropdown-item" onclick="getChart(1)" id="todayOption">Today</a>
                                 <a class="dropdown-item" onclick="getChart(2)" id="monthOption">Month</a>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -166,44 +182,6 @@
             </div>
         </div>
     </div>
-
-    {{-- <div class="col-xl-12 col-md-12">
-            <div class="card h-100">
-                <div class="card-header pb-0">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="dropdown">
-                            <button class="btn p-0" type="button" id="filter" data-bs-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical mdi-24px"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
-                                @foreach ($category as $ctgy)
-                                    <a class="dropdown-item" onclick="getChart($ctgy->id)"
-                                        id="todayOption">{{ $ctgy->category_description }}</a>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="card-body">
-                    <figure class="highcharts-figure">
-                        <div id="container"></div>
-                        <p class="highcharts-description">
-                            A basic column chart comparing estimated corn and wheat production
-                            in some countries.
-
-                            The chart is making use of the axis crosshair feature, to highlight
-                            the hovered country.
-                        </p>
-                    </figure>
-
-                </div>
-            </div>
-        </div> --}}
-    <!-- Chart Sales -->
-    <!-- End Chart Sales -->
-
     </div>
 @endsection
 
@@ -216,18 +194,32 @@
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <script>
         $(document).ready(function() {
-            getToday(1)
-            getChart(1)
+            getToday()
+            getChart()
         });
 
+        $('#min-date, #max-date').on('change', function() {
+            getToday();
+            getChart();
+    });
+
+    $('#reset-filters').on('click', function() {
+            $('#min-date').val('');
+            $('#max-date').val(''); getToday();
+            getChart();
+        });
         function getToday(filterid) // 1-today, 2-month
         {
+            var min_date = $('#min-date').val();
+            var max_date = $('#max-date').val();
+
             $.ajax({
                 type: "GET",
                 url: "{{ route('data-dashboard') }}",
                 data: {
                     _token: "{{ csrf_token() }}",
-                    filter: filterid,
+                    min: min_date,
+                    max: max_date,
                 },
                 success: function(response) {
                     console.log(response);
@@ -241,18 +233,25 @@
 
         function getChart(filterid) // 1-today, 2-month
         {
+
+            var min_date = $('#min-date').val();
+            var max_date = $('#max-date').val();
+
             $.ajax({
                 type: "GET",
                 url: "{{ route('data-trend-dashboard') }}",
                 data: {
                     _token: "{{ csrf_token() }}",
-                    filter: filterid,
+                    min: min_date,
+                    max: max_date,
                 },
                 success: function(response) {
                     var array = [];
                     response.category.forEach(element => {
                         array.push(response[element])
                     });
+
+                    console.log(array);
 
                     Highcharts.chart('container', {
                         chart: {
@@ -270,11 +269,6 @@
                                 description: 'Categories'
                             }
                         },
-                        yAxis: {
-                            min: 0,
-
-                        },
-                        
                         plotOptions: {
                             column: {
                                 pointPadding: 0.2,
