@@ -40,29 +40,32 @@ class Analytics extends Controller
         $min_date = $request->min;
         $max_date = $request->max;
 
-        $orderQuery = Order::query();
+        $orderQuery = Payment::query();
 
         if ($min_date) {
             // Filter based on min_date if provided
-            $orderQuery->whereDate('date', '>=', $min_date);
+            $orderQuery->whereDate('payment_date', '>=', $min_date);
         }
         if ($max_date) {
             // Filter based on max_date if provided
-            $orderQuery->whereDate('date', '<=', $max_date);
+            $orderQuery->whereDate('payment_date', '<=', $max_date);
         }
         if (!isset($min_date) && !isset($max_date)) {
-            $orderQuery->whereDate('date', $today);
+            $orderQuery->whereDate('payment_date', $today);
         }
-        $data['sale'] = $orderQuery->sum('total_amount');
+        $data['sale'] = $orderQuery->sum('payment_amount');
         $data['order'] = $orderQuery->count();
 
-        $data['delivery'] = $orderQuery->whereHas('payment', function ($payment) {
-            $payment->where('delivery_method', '1');
-        })->count();
+        $data['delivery'] = $orderQuery->where('delivery_method', '1')->count();
+        
+        $data['pickup'] = $orderQuery->where('delivery_method', '2')->count();
 
-        $data['pickup'] = $orderQuery->whereHas('payment', function ($payment) {
-            $payment->where('delivery_method', '2');
-        })->count();
+        // $data['delivery'] = $orderQuery->whereHas('payment', function ($payment) {
+        //     $payment->where('delivery_method', '1');
+        // })->count();
+        // $data['pickup'] = $orderQuery->whereHas('payment', function ($payment) {
+        //     $payment->where('delivery_method', '2');
+        // })->count();
 
         return $data;
     }
@@ -81,24 +84,24 @@ class Analytics extends Controller
         $data['category'] = $categories->pluck('category_description');
 
         // Initialize query builder for orders
-        $orderQuery = Order::query();
+        $orderQuery = Payment::query();
 
         // Apply date range filters if provided
 
         if ($min_date) {
             // Filter based on min_date if provided
-            $orderQuery->whereDate('date', '>=', $min_date);
+            $orderQuery->whereDate('payment_date', '>=', $min_date);
         }
         if ($max_date) {
             // Filter based on max_date if provided
-            $orderQuery->whereDate('date', '<=', $max_date);
+            $orderQuery->whereDate('payment_date', '<=', $max_date);
         }
         if (!isset($min_date) && !isset($max_date)) {
-            $orderQuery->whereDate('date', $today);
+            $orderQuery->whereDate('payment_date', $today);
         }
         // Iterate over categories to count orders for each category
         foreach ($categories as $category) {
-            $count = $orderQuery->whereHas('details.product', function ($query) use ($category) {
+            $count = $orderQuery->whereHas('order.details.product', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })->count();
 
