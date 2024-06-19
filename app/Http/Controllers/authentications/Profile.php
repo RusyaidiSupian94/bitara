@@ -17,12 +17,12 @@ class Profile extends Controller
 {
     public function index(Request $request, $id)
     {
-        $user = User::with('role','user_details')->find($id);
+        $user = User::with('role', 'user_details')->find($id);
 
         $states = State::all();
         $districts = District::all();
         $postcodes = Postcode::all();
-
+        //$states->prepend((object) ['id' => '', 'state_name' => 'Select a state']);
         return view('content.authentications.update-profile', compact('user', 'states', 'districts', 'postcodes'));
     }
     public function save(Request $request)
@@ -37,19 +37,39 @@ class Profile extends Controller
             }
         }
 
-        $user_details = UserDetail::where('user_id', $user->id)->update([
-            'fname' => $request->fname,
-            'lname' => $request->lname,
-            'address_1' => $request->address_1,
-            'address_2' => $request->address_2,
-            'postcode' => $request->postcode,
-            'district_id' => $request->district,
-            'state_id' => $request->state,
-            'postcode' => $request->postcode,
-            'district_id' => $request->district,
-            'email_address' => $request->email,
-            'contact_no' => $request->contact_no,
-        ]);
+        $exist = UserDetail::where('user_id', $user->id)->first();
+        
+        if ($exist) {
+
+            $user_details = UserDetail::where('user_id', $user->id)->update([
+                'fname' => $request->fname,
+                'lname' => $request->lname,
+                'address_1' => $request->address_1,
+                'address_2' => $request->address_2,
+                'postcode' => $request->postcode,
+                'district_id' => $request->district,
+                'state_id' => $request->state,
+                'postcode' => $request->postcode,
+                'district_id' => $request->district,
+                'email_address' => $request->email,
+                'contact_no' => $request->contact_no,
+            ]);
+        } else {
+            $user_details = UserDetail::create([
+                'fname' => $request->fname,
+                'lname' => $request->lname,
+                'address_1' => $request->address_1,
+                'address_2' => $request->address_2,
+                'postcode' => $request->postcode,
+                'district_id' => $request->district,
+                'state_id' => $request->state,
+                'postcode' => $request->postcode,
+                'district_id' => $request->district,
+                'email_address' => $request->email,
+                'contact_no' => $request->contact_no,
+                'user_id' => $user->id
+            ]);
+        }
 
         if ($user_details) {
 
