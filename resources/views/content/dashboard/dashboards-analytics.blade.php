@@ -35,8 +35,7 @@
                         </div>
                     </div><br><hr>
                     <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title m-0 me-2">Bitara Mart Transactions
-                            ({{ now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y') }})</h5>
+                        <h5 class="card-title m-0 me-2">Bitara Mart Transactions</h5>
                         <div class="dropdown">
                             <button class="btn p-0" type="button" id="filter" data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
@@ -154,8 +153,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title m-0 me-2">Order Trends
-                            ({{ now()->timezone('Asia/Kuala_Lumpur')->format('d-m-Y') }})</h5>
+                        <h5 class="card-title m-0 me-2">Order Trends</h5>
                         <div class="dropdown">
                             <button class="btn p-0" type="button" id="filter" data-bs-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">

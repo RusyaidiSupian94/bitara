@@ -53,12 +53,13 @@ class Analytics extends Controller
         if (!isset($min_date) && !isset($max_date)) {
             $orderQuery->whereDate('payment_date', $today);
         }
-        $data['sale'] = $orderQuery->sum('payment_amount');
-        $data['order'] = $orderQuery->count();
 
-        $data['delivery'] = $orderQuery->where('delivery_method', '1')->count();
-        
-        $data['pickup'] = $orderQuery->where('delivery_method', '2')->count();
+        $query = $orderQuery->get();
+        $data['delivery'] =   $query->where('delivery_method', 1)->count();
+        $data['pickup'] =   $query->where('delivery_method', 2)->count();
+        $data['order'] =   $query->count();
+        $data['sale'] =   $query->sum('payment_amount');
+
 
         // $data['delivery'] = $orderQuery->whereHas('payment', function ($payment) {
         //     $payment->where('delivery_method', '1');
